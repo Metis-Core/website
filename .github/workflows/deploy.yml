@@ -55,5 +55,5 @@ jobs:
 
       - name: Installing dependencies and starting application on port 4000
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd /home/dev/demo && npm i --legacy-peer-deps --production && (npx pm2 delete demo 2>/dev/null || true) && npx pm2 start npm --name 'demo' -i max -- start -- -p 4000"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd /home/dev/demo && npm install --legacy-peer-deps --omit=dev && (pm2 delete demo 2>/dev/null || true) && pm2 start npm --name 'demo' -- start -- -p 4000"
      
