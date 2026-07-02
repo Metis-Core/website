@@ -1,0 +1,61 @@
+name: Metis Site CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # - name: Creating .env file
+      #   run: |
+      #     echo "NEXT_PUBLIC_API_URL='${{ secrets.NEXT_PUBLIC_API_URL }}'" >> .env
+      #     echo "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY='${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}'" >> .env
+      #     echo "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME='${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}'" >> .env
+      #     echo "NEXT_PUBLIC_CLOUDINARY_API_KEY='${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_KEY }}'" >> .env
+      #     echo "NEXT_PUBLIC_CLOUDINARY_API_SECRET='${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_SECRET }}'" >> .env
+      #     echo "NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET='${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}'" >> .env
+      #     echo "NEXT_PUBLIC_CLOUDINARY_FOLDER='${{ secrets.NEXT_PUBLIC_CLOUDINARY_FOLDER }}'" >> .env
+      #     echo "NEXT_PUBLIC_AGENT_URL='${{ secrets.NEXT_PUBLIC_AGENT_URL }}'" >> .env
+      #     echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID='${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}'" >> .env
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 21.5.0
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm i --legacy-peer-deps
+
+      - name: Build Next.js application
+        run: npm run build
+
+      - name: Prepare deployment files
+        run: |
+          mkdir -p temp
+          cp package*.json temp/
+          cp next.config.ts temp/
+          cp -r public temp/
+          mkdir -p temp/lib/data
+          cp -r lib/data/uganda temp/lib/data/
+
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: Deploying build to server
+        run: |
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./.next ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/dev/demo
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./temp/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/dev/demo
+
+      - name: Installing dependencies and starting application on port 4000
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd /home/dev/demo && npm i --legacy-peer-deps --production && (npx pm2 delete demo 2>/dev/null || true) && npx pm2 start npm --name 'demo' -i max -- start -- -p 4000"
+     
