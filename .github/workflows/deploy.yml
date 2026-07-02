@@ -42,8 +42,6 @@ jobs:
           cp package*.json temp/
           cp next.config.ts temp/
           cp -r public temp/
-          mkdir -p temp/lib/data
-          cp -r lib/data/uganda temp/lib/data/
 
       - name: Set up SSH agent
         uses: webfactory/ssh-agent@v0.9.0
