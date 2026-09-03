@@ -2,6 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { sendEmail, adminNotificationEmail } from '@/lib/email/mailer';
+import { consultationAdminEmail, consultationConfirmationEmail } from '@/lib/email/templates';
 
 export type FormState = { error?: string; success?: string } | null;
 
@@ -40,6 +42,13 @@ export async function bookConsultationAction(_prev: FormState, formData: FormDat
     preferred_date: preferredDate,
   });
   if (error) return { error: error.message };
+
+  const payload = { name, email, phone, organization, sector, service_interest: serviceInterest, preferred_date: preferredDate, message };
+  const adminTo = adminNotificationEmail();
+  await Promise.allSettled([
+    adminTo ? sendEmail({ to: adminTo, replyTo: email, ...consultationAdminEmail(payload) }) : Promise.resolve(),
+    sendEmail({ to: email, ...consultationConfirmationEmail(payload) }),
+  ]);
 
   revalidatePath('/account/consultations');
   revalidatePath('/admin/consultations');

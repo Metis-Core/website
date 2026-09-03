@@ -4,15 +4,27 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 const f = createUploadthing();
 
+const documentTypes = {
+  'application/pdf': { maxFileSize: '8MB', maxFileCount: 1 },
+  'application/msword': { maxFileSize: '8MB', maxFileCount: 1 },
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+    maxFileSize: '8MB',
+    maxFileCount: 1,
+  },
+} as const;
+
 export const ourFileRouter = {
-  resumeUploader: f({
-    'application/pdf': { maxFileSize: '8MB', maxFileCount: 1 },
-    'application/msword': { maxFileSize: '8MB', maxFileCount: 1 },
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
-      maxFileSize: '8MB',
-      maxFileCount: 1,
-    },
-  })
+  resumeUploader: f(documentTypes)
+    .middleware(async () => {
+      const supabase = await createSupabaseServerClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      return { userId: user?.id ?? null };
+    })
+    .onUploadComplete(async ({ file, metadata }) => {
+      return { url: file.ufsUrl, name: file.name, size: file.size, userId: metadata.userId };
+    }),
+
+  coverLetterUploader: f(documentTypes)
     .middleware(async () => {
       const supabase = await createSupabaseServerClient();
       const { data: { user } } = await supabase.auth.getUser();

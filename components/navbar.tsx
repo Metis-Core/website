@@ -22,7 +22,6 @@ import {
 } from '@mui/material';
 import { Menu as MenuIcon, Close as CloseIcon, ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
-import NavbarSearchButton from '@/components/navbar-search';
 import AccountMenu, { type AccountMenuUser } from '@/components/account-menu';
 import CustomButton from '@/components/button';
 
@@ -92,19 +91,16 @@ const Navbar: FC<{ user?: AccountMenuUser | null }> = ({ user = null }) => {
   const drawer = (
     <Box sx={{ p: 2, width: '100%' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, gap: 1 }}>
-        <Link href="/" onClick={handleDrawerToggle} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+        <Link href="/" onClick={handleDrawerToggle} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', flex: 1 }}>
           <Image
             src="/assets/PNG/LOGO%20DARK%20GREY.png"
             alt="Metis Analytica"
-            width={140}
-            height={40}
-            style={{ height: 36, width: 'auto', objectFit: 'contain' }}
+            width={180}
+            height={52}
+            style={{ height: 48, width: 'auto', objectFit: 'contain' }}
             priority
           />
         </Link>
-        <Box sx={{ flex: 1 }}>
-          <NavbarSearchButton />
-        </Box>
         <IconButton onClick={handleDrawerToggle}>
           <CloseIcon />
         </IconButton>
@@ -253,10 +249,10 @@ const Navbar: FC<{ user?: AccountMenuUser | null }> = ({ user = null }) => {
         </Box>
       ) : (
         <Box sx={{ px: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <CustomButton component={Link} href="/login" variant="outlined" onClick={handleDrawerToggle} fullWidth>
+          <CustomButton href="/login" variant="outlined" onClick={handleDrawerToggle} fullWidth>
             Sign in
           </CustomButton>
-          <CustomButton component={Link} href="/register" variant="contained" onClick={handleDrawerToggle} fullWidth>
+          <CustomButton href="/register" variant="contained" onClick={handleDrawerToggle} fullWidth>
             Create account
           </CustomButton>
         </Box>
@@ -270,24 +266,19 @@ const Navbar: FC<{ user?: AccountMenuUser | null }> = ({ user = null }) => {
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', px: 2, gap: 3 }}>
         {/* Logo, Brand & Search */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {/* Logo & Brand — wordmark on every breakpoint, scales down on mobile */}
+          {/* Logo & Brand — wordmark on every breakpoint */}
           <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <Box sx={{ position: 'relative', width: { xs: 130, sm: 170 }, height: { xs: 34, sm: 42 } }}>
+            <Box sx={{ position: 'relative', width: { xs: 170, sm: 220 }, height: { xs: 44, sm: 56 } }}>
               <Image
                 src="/assets/PNG/LOGO%20DARK%20GREY.png"
                 alt="Metis Analytica"
                 fill
-                sizes="(max-width: 600px) 130px, 170px"
+                sizes="(max-width: 600px) 170px, 220px"
                 style={{ objectFit: 'contain', objectPosition: 'left center' }}
                 priority
               />
             </Box>
           </Link>
-
-          {/* Search Bar - Close to Logo */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <NavbarSearchButton />
-          </Box>
         </Box>
 
         {/* Desktop Navigation - Right Side */}

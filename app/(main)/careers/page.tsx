@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import { Box, Card, Chip, Container, Grid, Typography } from '@mui/material';
+import { Box, Chip, Container, Grid, Typography } from '@mui/material';
 import { LocationOn, WorkOutline, ArrowForward, EmojiPeople } from '@mui/icons-material';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import Hero from '@/components/hero';
+import { LinkCard } from '@/components/link-wrappers';
 import type { CareerPosition } from '@/lib/supabase/types';
 
 export const metadata = { title: 'Careers · Metis Analytica' };
@@ -57,8 +57,7 @@ export default async function CareersPage() {
           <Grid container spacing={3}>
             {list.map((p) => (
               <Grid size={{ xs: 12, md: 6 }} key={p.id}>
-                <Card
-                  component={Link}
+                <LinkCard
                   href={`/careers/${p.slug}`}
                   sx={{
                     display: 'block',
@@ -95,7 +94,7 @@ export default async function CareersPage() {
                       <ArrowForward sx={{ fontSize: 16 }} />
                     </Box>
                   </Box>
-                </Card>
+                </LinkCard>
               </Grid>
             ))}
           </Grid>

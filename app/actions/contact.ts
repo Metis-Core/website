@@ -2,6 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { sendEmail, adminNotificationEmail } from '@/lib/email/mailer';
+import { contactAdminEmail, contactAutoReplyEmail } from '@/lib/email/templates';
 
 export type FormState = { error?: string; success?: string } | null;
 
@@ -34,6 +36,13 @@ export async function sendContactMessageAction(_prev: FormState, formData: FormD
     message,
   });
   if (error) return { error: error.message };
+
+  const payload = { name, email, phone, subject, message };
+  const adminTo = adminNotificationEmail();
+  await Promise.allSettled([
+    adminTo ? sendEmail({ to: adminTo, replyTo: email, ...contactAdminEmail(payload) }) : Promise.resolve(),
+    sendEmail({ to: email, ...contactAutoReplyEmail(payload) }),
+  ]);
 
   revalidatePath('/admin/messages');
   return { success: 'Message sent — we\'ll get back to you within 24 hours.' };

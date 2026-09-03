@@ -26,10 +26,10 @@ export default async function Products() {
         description="Purpose-built products that together form a complete data operating system. Each layer is independently powerful; together they're unstoppable."
       >
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-          <CustomButton component={Link} href="/consultation?type=demo" variant="contained">
+          <CustomButton href="/consultation?type=demo" variant="contained">
             Request a Demo
           </CustomButton>
-          <CustomButton component={Link} href="/contact" variant="outlined">
+          <CustomButton href="/contact" variant="outlined">
             Contact Sales
           </CustomButton>
         </Box>
@@ -73,10 +73,10 @@ export default async function Products() {
           Explore each product in detail or schedule a demo with our team.
         </Typography>
         <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <CustomButton component={Link} href="/consultation?type=demo" variant="contained">
+          <CustomButton href="/consultation?type=demo" variant="contained">
             Schedule a Demo
           </CustomButton>
-          <CustomButton component={Link} href="/contact" variant="outlined">
+          <CustomButton href="/contact" variant="outlined">
             Contact Sales
           </CustomButton>
         </Box>

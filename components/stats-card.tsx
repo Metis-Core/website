@@ -1,17 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { Box, Typography, Button } from '@mui/material';
-import {
-  MorphingDialog,
-  MorphingDialogTrigger,
-  MorphingDialogContent,
-  MorphingDialogTitle,
-  MorphingDialogSubtitle,
-  MorphingDialogClose,
-  MorphingDialogDescription,
-  MorphingDialogContainer,
-} from '@/components/motion-primitives/morphing-dialog';
+import { Box, Chip, Paper, Typography } from '@mui/material';
 import { AnimatedStat } from '@/components/motion-primitives/animated-stat';
 
 interface StatsCardProps {
@@ -30,6 +20,11 @@ interface StatsCardProps {
   };
 }
 
+function parseNumber(raw: string): number | null {
+  const n = parseInt(raw, 10);
+  return Number.isFinite(n) ? n : null;
+}
+
 const StatsCard: React.FC<StatsCardProps> = ({
   number,
   label,
@@ -37,221 +32,144 @@ const StatsCard: React.FC<StatsCardProps> = ({
   icon,
   title,
   subtitle,
-  details,
   features,
   color = '#737373',
-  cta,
 }) => {
-  const displayTitle = title || label;
+  const displayTitle = title ?? label;
+  const supportText = subtitle ?? description;
+  const numericValue = number ? parseNumber(number) : null;
 
   return (
-    <MorphingDialog
-      transition={{
-        type: 'spring',
-        bounce: 0.05,
-        duration: 0.25,
+    <Paper
+      elevation={0}
+      sx={{
+        position: 'relative',
+        height: '100%',
+        minHeight: { xs: 148, sm: 176 },
+        p: { xs: 2, sm: 2.5 },
+        borderRadius: '14px',
+        border: '1px solid',
+        borderColor: `${color}33`,
+        backgroundColor: '#fff',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+        overflow: 'hidden',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 10px 24px rgba(0,0,0,0.06)',
+          borderColor: color,
+        },
       }}
     >
-      <MorphingDialogTrigger
-        style={{
-          borderRadius: '12px',
-          borderColor: `${color}30`,
-          backgroundColor: `${color}05`,
+      <Box
+        aria-hidden
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          backgroundColor: color,
         }}
-        className='flex max-w-full flex-col overflow-hidden border bg-white dark:border-zinc-50/10 dark:bg-zinc-900 transition-all duration-300 hover:shadow-lg h-full cursor-pointer p-8 text-center min-h-[220px]'
-      >
-        {number && (
-          <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center', fontSize: '2.5rem' }}>
-            <AnimatedStat
-              value={parseInt(number)}
-              color={color}
-            />
-          </Box>
-        )}
-        {!number && icon && (
+      />
+
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, minHeight: { xs: 40, sm: 44 } }}>
+        {icon && (
           <Box
             sx={{
+              width: { xs: 36, sm: 40 },
+              height: { xs: 36, sm: 40 },
+              flexShrink: 0,
+              borderRadius: '10px',
+              backgroundColor: `${color}15`,
+              color,
               display: 'flex',
+              alignItems: 'center',
               justifyContent: 'center',
-              color: color,
-              mb: 2,
-              fontSize: '2.5rem',
+              '& > svg': { fontSize: { xs: 20, sm: 22 } },
             }}
           >
             {icon}
           </Box>
         )}
+        {numericValue != null && (
+          <Box
+            sx={{
+              fontSize: { xs: '1.75rem', sm: '2rem' },
+              fontWeight: 800,
+              lineHeight: 1,
+              color,
+              display: 'flex',
+              alignItems: 'baseline',
+            }}
+          >
+            <AnimatedStat value={numericValue} color={color} />
+          </Box>
+        )}
+      </Box>
+
+      <Typography
+        variant="subtitle2"
+        sx={{
+          color: '#000',
+          fontWeight: 700,
+          fontSize: { xs: '0.9rem', sm: '0.95rem' },
+          lineHeight: 1.3,
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+        }}
+      >
+        {displayTitle}
+      </Typography>
+
+      {supportText && (
         <Typography
           variant="body2"
-          sx={{ color: '#666', fontWeight: 600, fontSize: '0.95rem', mb: 1 }}
-        >
-          {label}
-        </Typography>
-        {description && (
-          <Typography
-            variant="caption"
-            sx={{ color: color, fontWeight: 600, fontSize: '0.85rem' }}
-          >
-            {description}
-          </Typography>
-        )}
-      </MorphingDialogTrigger>
-
-      <MorphingDialogContainer>
-        <MorphingDialogContent
-          style={{
-            borderRadius: '24px',
-            borderColor: `${color}30`,
-            backgroundColor: '#ffffff',
+          sx={{
+            color: '#666',
+            fontSize: { xs: '0.78rem', sm: '0.82rem' },
+            lineHeight: 1.45,
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
           }}
-          className='pointer-events-auto relative flex h-auto w-full flex-col overflow-hidden border dark:border-zinc-50/10 dark:bg-zinc-900 sm:w-[500px]'
         >
-          {icon && (
-            <div className='h-32 w-full' style={{ backgroundColor: `${color}15` }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '100%',
-                  color: color,
-                  fontSize: '3rem',
-                }}
-              >
-                {icon}
-              </Box>
-            </div>
-          )}
-          {number && !icon && (
-            <div className='h-32 w-full' style={{ backgroundColor: `${color}15` }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '100%',
-                  fontSize: '3rem',
-                }}
-              >
-                <AnimatedStat
-                  value={parseInt(number)}
-                  color={color}
-                  className='text-4xl'
-                />
-              </Box>
-            </div>
-          )}
-          {number && icon && (
-            <div className='h-32 w-full' style={{ backgroundColor: `${color}15` }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '100%',
-                  fontSize: '3rem',
-                  gap: 2,
-                }}
-              >
-                {icon}
-                <AnimatedStat
-                  value={parseInt(number)}
-                  color={color}
-                  className='text-4xl'
-                />
-              </Box>
-            </div>
-          )}
+          {supportText}
+        </Typography>
+      )}
 
-          <div className='p-6'>
-            <MorphingDialogTitle className='text-2xl font-bold text-black mb-1'>
-              {displayTitle}
-            </MorphingDialogTitle>
-            {(subtitle || description) && (
-              <MorphingDialogSubtitle className='font-semibold mb-4' style={{ color: color }}>
-                {subtitle || description}
-              </MorphingDialogSubtitle>
-            )}
-
-            <MorphingDialogDescription
-              disableLayoutAnimation
-              variants={{
-                initial: { opacity: 0, scale: 0.8, y: 100 },
-                animate: { opacity: 1, scale: 1, y: 0 },
-                exit: { opacity: 0, scale: 0.8, y: 100 },
+      {features && features.length > 0 && (
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 'auto', pt: 1 }}>
+          {features.slice(0, 3).map((f) => (
+            <Chip
+              key={f}
+              label={f}
+              size="small"
+              sx={{
+                bgcolor: `${color}12`,
+                color: '#333',
+                fontWeight: 600,
+                fontSize: '0.7rem',
+                height: 22,
               }}
-            >
-              {details && (
-                <div>
-                  {typeof details === 'string' ? (
-                    <Typography
-                      variant="body2"
-                      sx={{ color: '#666', mb: 3, lineHeight: 1.8 }}
-                    >
-                      {details}
-                    </Typography>
-                  ) : (
-                    details
-                  )}
-                </div>
-              )}
-
-              {features && features.length > 0 && (
-                <>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: 600, color: '#000', mb: 2 }}
-                  >
-                    Details:
-                  </Typography>
-                  <Box sx={{ mb: 3 }}>
-                    {features.map((feature, idx) => (
-                      <Box key={idx} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-                        <Box
-                          sx={{
-                            width: '6px',
-                            height: '6px',
-                            borderRadius: '50%',
-                            backgroundColor: color,
-                            flexShrink: 0,
-                          }}
-                        />
-                        <Typography variant="body2" sx={{ color: '#666' }}>
-                          {feature}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
-                </>
-              )}
-
-              {cta && (
-                <Button
-                  fullWidth
-                  variant="contained"
-                  onClick={cta.onClick}
-                  sx={{
-                    backgroundColor: color,
-                    color: '#fff',
-                    fontWeight: 600,
-                    textTransform: 'none',
-                    py: 1.5,
-                    mt: 2,
-                    '&:hover': {
-                      backgroundColor: color,
-                      opacity: 0.9,
-                    },
-                  }}
-                >
-                  {cta.text}
-                </Button>
-              )}
-            </MorphingDialogDescription>
-          </div>
-          <MorphingDialogClose className='absolute top-4 right-4' />
-        </MorphingDialogContent>
-      </MorphingDialogContainer>
-    </MorphingDialog>
+            />
+          ))}
+          {features.length > 3 && (
+            <Chip
+              label={`+${features.length - 3}`}
+              size="small"
+              variant="outlined"
+              sx={{ fontSize: '0.7rem', height: 22, borderColor: `${color}55`, color: '#666' }}
+            />
+          )}
+        </Box>
+      )}
+    </Paper>
   );
 };
 

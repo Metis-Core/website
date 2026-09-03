@@ -1,11 +1,13 @@
 'use client';
 
 import { FC, ReactNode } from 'react';
+import NextLink from 'next/link';
 import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-interface CustomButtonProps extends MuiButtonProps {
+interface CustomButtonProps extends Omit<MuiButtonProps, 'href'> {
   children: ReactNode;
+  href?: string;
 }
 
 const StyledButton = styled(MuiButton)(({ theme }) => ({
@@ -36,8 +38,16 @@ const StyledButton = styled(MuiButton)(({ theme }) => ({
 const CustomButton: FC<CustomButtonProps> = ({
   children,
   variant = 'contained',
+  href,
   ...props
 }) => {
+  if (href) {
+    return (
+      <StyledButton variant={variant} component={NextLink} href={href} {...props}>
+        {children}
+      </StyledButton>
+    );
+  }
   return (
     <StyledButton variant={variant} {...props}>
       {children}

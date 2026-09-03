@@ -41,10 +41,10 @@ export default async function Home() {
         imageAlt="Metis Analytica"
       >
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-          <CustomButton component={Link} href="/consultation" variant="contained" size="large">
+          <CustomButton href="/consultation" variant="contained" size="large">
             Book a Consultation
           </CustomButton>
-          <CustomButton component={Link} href="/consultation?type=demo" variant="outlined" size="large">
+          <CustomButton href="/consultation?type=demo" variant="outlined" size="large">
             Request a Demo
           </CustomButton>
         </Box>
@@ -54,8 +54,8 @@ export default async function Home() {
       </Hero>
 
       {/* Problem Statement */}
-      <Container maxWidth="lg" sx={{ py: 12 }}>
-        <Box sx={{ textAlign: 'center', mb: 8 }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 12 } }}>
+        <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 8 } }}>
           <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 700, fontSize: '0.875rem', mb: 1 }}>
             The Reality in Uganda & Emerging Markets
           </Typography>
@@ -65,7 +65,7 @@ export default async function Home() {
           >
             Most Organizations Are Still Trapped in the Excel Era
           </Typography>
-          <Grid container spacing={3} sx={{ maxWidth: '900px', mx: 'auto' }}>
+          <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }} sx={{ maxWidth: '900px', mx: 'auto' }}>
             {stats.map((stat, index) => (
               <Grid size={{ xs: 6, md: 3 }} key={index}>
                 <StatsCard
@@ -81,8 +81,8 @@ export default async function Home() {
       </Container>
 
       {/* Core Services (DB-backed) */}
-      <Container maxWidth="lg" sx={{ py: 12 }}>
-        <Box sx={{ textAlign: 'center', mb: 8 }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 12 } }}>
+        <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 8 } }}>
           <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 700, fontSize: '0.875rem' }}>
             What We Do
           </Typography>
@@ -172,10 +172,10 @@ export default async function Home() {
           Let&apos;s talk about your data challenges and how Metis can transform your operations
         </Typography>
         <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <CustomButton component={Link} href="/consultation" variant="contained" size="large">
+          <CustomButton href="/consultation" variant="contained" size="large">
             Book a Consultation
           </CustomButton>
-          <CustomButton component={Link} href="/contact" variant="outlined" size="large">
+          <CustomButton href="/contact" variant="outlined" size="large">
             Start a Conversation
           </CustomButton>
         </Box>

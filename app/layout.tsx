@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ThemeProvider } from "@/lib/theme-provider";
@@ -39,8 +40,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-        <ThemeProvider>{children}</ThemeProvider>
+        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+          <ThemeProvider>{children}</ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

@@ -106,6 +106,7 @@ export interface JobApplication {
   phone: string | null;
   resume_url: string | null;
   cover_letter: string | null;
+  cover_letter_url: string | null;
   status: ApplicationStatus;
   created_at: string;
 }
