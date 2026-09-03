@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { ContactMessage } from '@/lib/supabase/types';
 import MessageStatusSelect from './_components/message-status-select';
+import DeleteMessageButton from './_components/delete-message-button';
 
 export const metadata = { title: 'Contact messages · Admin' };
 
@@ -45,6 +46,7 @@ export default async function AdminMessagesPage() {
                   </Typography>
                 </Box>
                 <MessageStatusSelect id={m.id} value={m.status} />
+                <DeleteMessageButton id={m.id} />
               </Box>
               <Typography variant="body2" sx={{ color: '#333', lineHeight: 1.6, whiteSpace: 'pre-wrap', mt: 1.5 }}>
                 {m.message}

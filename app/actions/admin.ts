@@ -74,3 +74,44 @@ export async function toggleCareerActiveAction(id: string, isActive: boolean) {
   revalidatePath('/admin/careers');
   revalidatePath('/careers');
 }
+
+export async function deleteFeedbackAction(id: string) {
+  await requireAdmin();
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from('feedback').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+  revalidatePath('/admin/feedback');
+}
+
+export async function deleteConsultationAction(id: string) {
+  await requireAdmin();
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from('consultations').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+  revalidatePath('/admin/consultations');
+}
+
+export async function deleteApplicationAction(id: string) {
+  await requireAdmin();
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from('job_applications').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+  revalidatePath('/admin/applications');
+}
+
+export async function deleteContactMessageAction(id: string) {
+  await requireAdmin();
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from('contact_messages').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+  revalidatePath('/admin/messages');
+}
+
+export async function deleteUserAction(userId: string) {
+  const { userId: myId } = await requireAdmin();
+  if (userId === myId) throw new Error('You cannot delete your own account from here.');
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from('profiles').delete().eq('id', userId);
+  if (error) throw new Error(error.message);
+  revalidatePath('/admin/users');
+}

@@ -11,8 +11,16 @@ import FeatureCard from '@/components/feature-card';
 import StatsCard from '@/components/stats-card';
 import CustomButton from '@/components/button';
 import { DynamicIcon } from '@/components/dynamic-icon';
+import StructuredData from '@/components/structured-data';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import type { Service } from '@/lib/supabase/types';
+
+export const metadata = {
+  title: 'Reliable Data. Smarter Operations.',
+  description:
+    'Metis Analytica designs, builds, and runs sovereign data infrastructure, custom analytics, and long-term data custodianship for institutions in emerging markets.',
+  alternates: { canonical: '/' },
+};
 
 export default async function Home() {
   const supabase = await createSupabaseServerClient();
@@ -33,6 +41,7 @@ export default async function Home() {
 
   return (
     <>
+      <StructuredData />
       <Hero
         title="We Build the Data Foundations Behind Great Products and Decisions"
         subtitle="Data Infrastructure • Data Solutions • Analytics"

@@ -1,11 +1,21 @@
-'use client';
-
 import { FC } from 'react';
 import { Container, Grid, Box, Typography, Card, CardContent } from '@mui/material';
 import { Email, Phone, LocationOn, People, Bolt, EmojiEvents } from '@mui/icons-material';
 import Hero from '@/components/hero';
 import ContactForm from '@/components/contact-form';
 import FeatureCard from '@/components/feature-card';
+
+export const metadata = {
+  title: 'Contact',
+  description:
+    'Talk to Metis Analytica about your data infrastructure, analytics, or custodianship needs — we respond within 24 hours.',
+  alternates: { canonical: '/contact' },
+  openGraph: {
+    title: 'Contact Metis Analytica',
+    description: 'Start a conversation with our team — we respond within 24 hours.',
+    url: '/contact',
+  },
+};
 
 const Contact: FC = () => {
   const contactInfo = [
