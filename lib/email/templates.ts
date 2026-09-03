@@ -3,7 +3,7 @@ const brand = {
   tagline: 'Reliable Data. Smarter Operations.',
   color: '#000000',
   accent: '#737373',
-  site: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://metisanalytica.com',
+  site: 'https://metisanalytica.com',
 };
 
 function escapeHtml(value: string): string {

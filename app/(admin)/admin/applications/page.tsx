@@ -5,6 +5,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { JobApplication, CareerPosition } from '@/lib/supabase/types';
 import ApplicationStatusSelect from './_components/application-status-select';
+import DeleteApplicationButton from './_components/delete-application-button';
 
 export const metadata = { title: 'Applications · Admin' };
 
@@ -55,6 +56,7 @@ export default async function AdminApplicationsPage() {
                   </Typography>
                 </Box>
                 <ApplicationStatusSelect id={a.id} value={a.status} />
+                <DeleteApplicationButton id={a.id} />
               </Box>
 
               {a.phone && (

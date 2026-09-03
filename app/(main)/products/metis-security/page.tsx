@@ -1,11 +1,21 @@
-'use client';
-
 import { FC } from 'react';
 import { Box, Container, Typography, Grid, Card, CardContent } from '@mui/material';
 import { SecurityOutlined, LockOutlined, VerifiedUser, Assessment } from '@mui/icons-material';
 import Hero from '@/components/hero';
 import CustomButton from '@/components/button';
 import StatsCard from '@/components/stats-card';
+
+export const metadata = {
+  title: 'Metis Security — Data Protection & Governance',
+  description:
+    'Enterprise-grade security embedded at every layer — end-to-end encryption, role-based access, audit trails, and data-residency controls.',
+  alternates: { canonical: '/products/metis-security' },
+  openGraph: {
+    title: 'Metis Security',
+    description: 'Enterprise-grade data protection and governance built into every layer.',
+    url: '/products/metis-security',
+  },
+};
 
 const MetisSecurity: FC = () => {
   const features = [

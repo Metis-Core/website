@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { Profile } from '@/lib/supabase/types';
 import UserRoleSelect from './_components/user-role-select';
+import DeleteUserButton from './_components/delete-user-button';
 
 export const metadata = { title: 'Users · Admin' };
 
@@ -52,6 +53,7 @@ export default async function AdminUsersPage() {
               {new Date(p.created_at).toLocaleDateString()}
             </Typography>
             <UserRoleSelect userId={p.id} value={p.role} disabled={p.id === myId} />
+            <DeleteUserButton id={p.id} disabled={p.id === myId} />
           </Box>
         ))}
       </Paper>

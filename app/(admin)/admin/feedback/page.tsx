@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { Feedback } from '@/lib/supabase/types';
 import FeedbackStatusSelect from './_components/feedback-status-select';
+import DeleteFeedbackButton from './_components/delete-feedback-button';
 
 export const metadata = { title: 'Feedback · Admin' };
 
@@ -41,6 +42,7 @@ export default async function AdminFeedbackPage() {
                   </Typography>
                 </Box>
                 <FeedbackStatusSelect id={f.id} value={f.status} />
+                <DeleteFeedbackButton id={f.id} />
               </Box>
               {f.rating != null && <Rating value={f.rating} readOnly size="small" sx={{ mt: 1 }} />}
               <Typography variant="body2" sx={{ color: '#333', lineHeight: 1.6, whiteSpace: 'pre-wrap', mt: 1.5 }}>

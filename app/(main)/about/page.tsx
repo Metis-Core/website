@@ -1,11 +1,21 @@
-'use client';
-
 import { FC } from 'react';
 import { Box, Container, Typography, Grid } from '@mui/material';
 import { VerifiedUser, Lightbulb, Gavel, AutoFixHigh } from '@mui/icons-material';
 import Hero from '@/components/hero';
 import StatsCard from '@/components/stats-card';
 import CustomButton from '@/components/button';
+
+export const metadata = {
+  title: 'About',
+  description:
+    'Metis Analytica is a data custodian and partner — we design, build, and safeguard sovereign data infrastructure for NGOs, SMEs, corporations, and government in emerging markets.',
+  alternates: { canonical: '/about' },
+  openGraph: {
+    title: 'About Metis Analytica',
+    description: 'How we design, build, and safeguard sovereign data infrastructure for institutions in emerging markets.',
+    url: '/about',
+  },
+};
 
 const About: FC = () => {
   const coreValues = [

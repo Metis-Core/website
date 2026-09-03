@@ -47,9 +47,14 @@ export default function PhoneInput({
             borderColor: '#1976d2',
             boxShadow: '0 0 0 3px rgba(25,118,210,0.15)',
           },
-          '.PhoneInput': { display: 'flex', alignItems: 'center', gap: 8 },
-          '.PhoneInputCountry': { display: 'flex', alignItems: 'center' },
+          // Tighten the country selector so the number sits right next to the flag.
+          '--PhoneInputCountrySelect-marginRight': '4px',
+          '--PhoneInputCountrySelectArrow-marginLeft': '2px',
+          '--PhoneInputCountrySelectArrow-width': '0.25em',
+          '.PhoneInput': { display: 'flex', alignItems: 'center', gap: '4px' },
+          '.PhoneInputCountry': { display: 'flex', alignItems: 'center', mr: 0 },
           '.PhoneInputCountrySelect': { fontSize: '0.95rem', color: '#000' },
+          '.PhoneInputCountryIcon': { width: '1.5em', height: '1.1em' },
           '.PhoneInputInput': {
             flex: 1,
             border: 'none',
@@ -57,6 +62,7 @@ export default function PhoneInput({
             fontSize: '1rem',
             background: 'transparent',
             color: '#000',
+            pl: '2px',
           },
         }}
       >

@@ -1,11 +1,21 @@
-'use client';
-
 import { FC } from 'react';
 import { Box, Container, Typography, Grid, Card, CardContent } from '@mui/material';
 import { Storage, CheckCircle, FlashOn, Shield } from '@mui/icons-material';
 import Hero from '@/components/hero';
 import CustomButton from '@/components/button';
 import StatsCard from '@/components/stats-card';
+
+export const metadata = {
+  title: 'Metis Database — Sovereign Data Platform',
+  description:
+    'A centralized, sovereign data repository built for institutions. Metis Database unifies data from every source into a single, secure source of truth.',
+  alternates: { canonical: '/products/metis-database' },
+  openGraph: {
+    title: 'Metis Database',
+    description: 'A centralized, sovereign data repository built for institutions.',
+    url: '/products/metis-database',
+  },
+};
 
 const MerisDatabase: FC = () => {
   const features = [

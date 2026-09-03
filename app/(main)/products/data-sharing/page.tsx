@@ -1,11 +1,21 @@
-'use client';
-
 import { FC } from 'react';
 import { Box, Container, Typography, Grid, Card, CardContent } from '@mui/material';
 import { ShareOutlined, Visibility, VerifiedUser, Speed } from '@mui/icons-material';
 import Hero from '@/components/hero';
 import CustomButton from '@/components/button';
 import StatsCard from '@/components/stats-card';
+
+export const metadata = {
+  title: 'Metis Data Sharing — Secure Data Collaboration',
+  description:
+    'Metis Data Sharing enables secure, auditable data sharing across teams and organizations — granular permissions, data-mesh architecture, and compliance built in.',
+  alternates: { canonical: '/products/data-sharing' },
+  openGraph: {
+    title: 'Metis Data Sharing',
+    description: 'Secure, auditable data sharing across teams and organizations.',
+    url: '/products/data-sharing',
+  },
+};
 
 const DataSharing: FC = () => {
   const features = [

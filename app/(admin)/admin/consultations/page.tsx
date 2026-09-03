@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { Consultation } from '@/lib/supabase/types';
 import ConsultationStatusSelect from './_components/consultation-status-select';
+import DeleteConsultationButton from './_components/delete-consultation-button';
 
 export const metadata = { title: 'Consultations · Admin' };
 
@@ -42,6 +43,7 @@ export default async function AdminConsultationsPage() {
                   </Typography>
                 </Box>
                 <ConsultationStatusSelect id={c.id} value={c.status} />
+                <DeleteConsultationButton id={c.id} />
               </Box>
 
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mt: 1.5 }}>

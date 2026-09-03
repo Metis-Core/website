@@ -1,11 +1,21 @@
-'use client';
-
 import { FC } from 'react';
 import { Box, Container, Typography, Grid, Card, CardContent } from '@mui/material';
 import { Analytics, TrendingUp, SmartToy, Speed } from '@mui/icons-material';
 import Hero from '@/components/hero';
 import CustomButton from '@/components/button';
 import StatsCard from '@/components/stats-card';
+
+export const metadata = {
+  title: 'Metis Analytics — Intelligence & Insights',
+  description:
+    'Turn raw data into decisions with Metis Analytics — real-time dashboards, predictive models, AI-powered insights, and decision support.',
+  alternates: { canonical: '/products/metis-analytics' },
+  openGraph: {
+    title: 'Metis Analytics',
+    description: 'Real-time dashboards, predictive models, and decision support.',
+    url: '/products/metis-analytics',
+  },
+};
 
 const MetisAnalytics: FC = () => {
   const features = [
