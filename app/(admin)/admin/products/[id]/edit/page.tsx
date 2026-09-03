@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { Box, Paper, Typography } from '@mui/material';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
-import { updateProductAction, type FormState } from '@/app/actions/catalog';
+import { updateProductAction } from '@/app/actions/catalog';
 import ProductForm from '../../_components/product-form';
 import type { Product } from '@/lib/supabase/types';
 
@@ -15,7 +15,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   const { data: product } = await supabase.from('products').select('*').eq('id', id).maybeSingle<Product>();
   if (!product) notFound();
 
-  const boundAction = async (state: FormState, formData: FormData) => updateProductAction(id, state, formData);
+  const boundAction = updateProductAction.bind(null, id);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>

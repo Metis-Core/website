@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { Box, Paper, Typography } from '@mui/material';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
-import { updateServiceAction, type FormState } from '@/app/actions/catalog';
+import { updateServiceAction } from '@/app/actions/catalog';
 import ServiceForm from '../../_components/service-form';
 import type { Service } from '@/lib/supabase/types';
 
@@ -15,7 +15,7 @@ export default async function EditServicePage({ params }: { params: Promise<{ id
   const { data: service } = await supabase.from('services').select('*').eq('id', id).maybeSingle<Service>();
   if (!service) notFound();
 
-  const boundAction = async (state: FormState, formData: FormData) => updateServiceAction(id, state, formData);
+  const boundAction = updateServiceAction.bind(null, id);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
