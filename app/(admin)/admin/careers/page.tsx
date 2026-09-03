@@ -5,7 +5,9 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { CareerPosition } from '@/lib/supabase/types';
 import CustomButton from '@/components/button';
+import SearchBar from '@/components/search-bar';
 import { LinkIconButton } from '@/components/link-wrappers';
+import { matchesQuery } from '@/lib/search';
 import CareerActiveToggle from './_components/career-active-toggle';
 import DeleteCareerButton from './_components/delete-career-button';
 
@@ -18,11 +20,17 @@ const TYPE_LABEL: Record<CareerPosition['type'], string> = {
   internship: 'Internship',
 };
 
-export default async function AdminCareersPage() {
+export default async function AdminCareersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   await requireAdmin();
+  const { q = '' } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.from('career_positions').select('*').order('created_at', { ascending: false });
-  const items = (data ?? []) as CareerPosition[];
+  const all = (data ?? []) as CareerPosition[];
+  const items = q ? all.filter((p) => matchesQuery([p.title, p.slug, p.department, p.location, TYPE_LABEL[p.type]], q)) : all;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -30,13 +38,15 @@ export default async function AdminCareersPage() {
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 700, color: '#000' }}>Careers</Typography>
           <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-            {items.length} position{items.length === 1 ? '' : 's'}.
+            {items.length} of {all.length} position{all.length === 1 ? '' : 's'}{q ? ` matching “${q}”` : ''}.
           </Typography>
         </Box>
         <CustomButton href="/admin/careers/new" variant="contained">
           New position
         </CustomButton>
       </Box>
+
+      <SearchBar placeholder="Search positions by title, department, type…" />
 
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
         {items.map((p) => (

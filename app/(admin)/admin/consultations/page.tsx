@@ -2,16 +2,26 @@ import { Box, Paper, Typography } from '@mui/material';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { Consultation } from '@/lib/supabase/types';
+import SearchBar from '@/components/search-bar';
+import { matchesQuery } from '@/lib/search';
 import ConsultationStatusSelect from './_components/consultation-status-select';
 import DeleteConsultationButton from './_components/delete-consultation-button';
 
 export const metadata = { title: 'Consultations · Admin' };
 
-export default async function AdminConsultationsPage() {
+export default async function AdminConsultationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   await requireAdmin();
+  const { q = '' } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.from('consultations').select('*').order('created_at', { ascending: false });
-  const items = (data ?? []) as Consultation[];
+  const all = (data ?? []) as Consultation[];
+  const items = q
+    ? all.filter((c) => matchesQuery([c.name, c.email, c.organization, c.sector, c.service_interest, c.message, c.status], q))
+    : all;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -20,9 +30,11 @@ export default async function AdminConsultationsPage() {
           Consultations
         </Typography>
         <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-          {items.length} total request{items.length === 1 ? '' : 's'}.
+          {items.length} of {all.length} request{all.length === 1 ? '' : 's'}{q ? ` matching “${q}”` : ''}.
         </Typography>
       </Box>
+
+      <SearchBar placeholder="Search consultations by name, email, organization, sector…" />
 
       {items.length === 0 ? (
         <Paper elevation={0} sx={{ p: 6, borderRadius: '16px', border: '1px dashed #ddd', textAlign: 'center' }}>

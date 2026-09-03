@@ -268,12 +268,12 @@ const Navbar: FC<{ user?: AccountMenuUser | null }> = ({ user = null }) => {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           {/* Logo & Brand — wordmark on every breakpoint */}
           <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <Box sx={{ position: 'relative', width: { xs: 170, sm: 220 }, height: { xs: 44, sm: 56 } }}>
+            <Box sx={{ position: 'relative', width: { xs: 200, sm: 260 }, height: { xs: 52, sm: 66 } }}>
               <Image
                 src="/assets/PNG/LOGO%20DARK%20GREY.png"
                 alt="Metis Analytica"
                 fill
-                sizes="(max-width: 600px) 170px, 220px"
+                sizes="(max-width: 600px) 200px, 260px"
                 style={{ objectFit: 'contain', objectPosition: 'left center' }}
                 priority
               />

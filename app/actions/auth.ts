@@ -42,18 +42,15 @@ export async function registerAction(_prev: AuthState, formData: FormData): Prom
   if (password !== confirm) return { error: 'Passwords do not match.' };
 
   const supabase = await createSupabaseServerClient();
-  const origin = (await headers()).get('origin') ?? '';
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      data: { full_name: fullName },
-      emailRedirectTo: `${origin}/auth/callback?next=/account`,
-    },
+    options: { data: { full_name: fullName } },
   });
   if (error) return { error: error.message };
 
-  return { success: 'Check your inbox to confirm your email, then log in.' };
+  revalidatePath('/', 'layout');
+  redirect('/login?registered=1');
 }
 
 export async function logoutAction() {

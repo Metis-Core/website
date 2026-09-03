@@ -4,12 +4,19 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireUser } from '@/lib/supabase/queries';
 import StatusChip from '@/components/status-chip';
 import CustomButton from '@/components/button';
+import SearchBar from '@/components/search-bar';
+import { matchesQuery } from '@/lib/search';
 import type { Consultation } from '@/lib/supabase/types';
 
 export const metadata = { title: 'My consultations · Metis Analytica' };
 
-export default async function AccountConsultationsPage() {
+export default async function AccountConsultationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   const { userId } = await requireUser();
+  const { q = '' } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from('consultations')
@@ -17,7 +24,10 @@ export default async function AccountConsultationsPage() {
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
 
-  const items = (data ?? []) as Consultation[];
+  const all = (data ?? []) as Consultation[];
+  const items = q
+    ? all.filter((c) => matchesQuery([c.service_interest, c.organization, c.sector, c.message, c.status], q))
+    : all;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -27,13 +37,15 @@ export default async function AccountConsultationsPage() {
             My consultations
           </Typography>
           <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-            Consultations you&apos;ve requested with our team.
+            {items.length} of {all.length} consultation{all.length === 1 ? '' : 's'}{q ? ` matching “${q}”` : ''}.
           </Typography>
         </Box>
         <CustomButton href="/consultation" variant="contained">
           Book another
         </CustomButton>
       </Box>
+
+      <SearchBar placeholder="Search by service, sector, organization, status…" />
 
       {items.length === 0 ? (
         <Paper elevation={0} sx={{ p: 6, borderRadius: '16px', border: '1px dashed #ddd', textAlign: 'center' }}>
