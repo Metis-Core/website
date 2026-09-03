@@ -2,16 +2,26 @@ import { Box, Paper, Typography } from '@mui/material';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { ContactMessage } from '@/lib/supabase/types';
+import SearchBar from '@/components/search-bar';
+import { matchesQuery } from '@/lib/search';
 import MessageStatusSelect from './_components/message-status-select';
 import DeleteMessageButton from './_components/delete-message-button';
 
 export const metadata = { title: 'Contact messages · Admin' };
 
-export default async function AdminMessagesPage() {
+export default async function AdminMessagesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   await requireAdmin();
+  const { q = '' } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
-  const items = (data ?? []) as ContactMessage[];
+  const all = (data ?? []) as ContactMessage[];
+  const items = q
+    ? all.filter((m) => matchesQuery([m.name, m.email, m.subject, m.message, m.status], q))
+    : all;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -20,9 +30,11 @@ export default async function AdminMessagesPage() {
           Contact messages
         </Typography>
         <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-          {items.length} total message{items.length === 1 ? '' : 's'}.
+          {items.length} of {all.length} message{all.length === 1 ? '' : 's'}{q ? ` matching “${q}”` : ''}.
         </Typography>
       </Box>
+
+      <SearchBar placeholder="Search messages by name, email, subject, body…" />
 
       {items.length === 0 ? (
         <Paper elevation={0} sx={{ p: 6, borderRadius: '16px', border: '1px dashed #ddd', textAlign: 'center' }}>

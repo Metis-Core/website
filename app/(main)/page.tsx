@@ -57,9 +57,6 @@ export default async function Home() {
             Request a Demo
           </CustomButton>
         </Box>
-        <Typography variant="caption" sx={{ display: 'block', color: '#666', mt: 2 }}>
-          Free · 45 minutes · No sign-up required
-        </Typography>
       </Hero>
 
       {/* Problem Statement */}

@@ -4,17 +4,25 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { Product } from '@/lib/supabase/types';
 import CustomButton from '@/components/button';
+import SearchBar from '@/components/search-bar';
 import { LinkIconButton } from '@/components/link-wrappers';
+import { matchesQuery } from '@/lib/search';
 import ProductActiveToggle from './_components/product-active-toggle';
 import DeleteProductButton from './_components/delete-product-button';
 
 export const metadata = { title: 'Products · Admin' };
 
-export default async function AdminProductsPage() {
+export default async function AdminProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   await requireAdmin();
+  const { q = '' } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.from('products').select('*').order('sort_order', { ascending: true });
-  const items = (data ?? []) as Product[];
+  const all = (data ?? []) as Product[];
+  const items = q ? all.filter((p) => matchesQuery([p.title, p.slug, p.subtitle, ...p.features], q)) : all;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -22,13 +30,15 @@ export default async function AdminProductsPage() {
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 700, color: '#000' }}>Products</Typography>
           <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-            {items.length} product{items.length === 1 ? '' : 's'}.
+            {items.length} of {all.length} product{all.length === 1 ? '' : 's'}{q ? ` matching “${q}”` : ''}.
           </Typography>
         </Box>
         <CustomButton href="/admin/products/new" variant="contained">
           New product
         </CustomButton>
       </Box>
+
+      <SearchBar placeholder="Search products by title, slug, feature…" />
 
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
         {items.map((p) => (

@@ -4,12 +4,19 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireUser } from '@/lib/supabase/queries';
 import StatusChip from '@/components/status-chip';
 import CustomButton from '@/components/button';
+import SearchBar from '@/components/search-bar';
+import { matchesQuery } from '@/lib/search';
 import type { Feedback } from '@/lib/supabase/types';
 
 export const metadata = { title: 'My feedback · Metis Analytica' };
 
-export default async function AccountFeedbackPage() {
+export default async function AccountFeedbackPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   const { userId } = await requireUser();
+  const { q = '' } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from('feedback')
@@ -17,7 +24,10 @@ export default async function AccountFeedbackPage() {
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
 
-  const items = (data ?? []) as Feedback[];
+  const all = (data ?? []) as Feedback[];
+  const items = q
+    ? all.filter((f) => matchesQuery([f.category, f.message, f.status], q))
+    : all;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -27,13 +37,15 @@ export default async function AccountFeedbackPage() {
             My feedback
           </Typography>
           <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-            Everything you&apos;ve shared with us.
+            {items.length} of {all.length} entr{all.length === 1 ? 'y' : 'ies'}{q ? ` matching “${q}”` : ''}.
           </Typography>
         </Box>
         <CustomButton href="/feedback" variant="contained">
           New feedback
         </CustomButton>
       </Box>
+
+      <SearchBar placeholder="Search by category, message, status…" />
 
       {items.length === 0 ? (
         <Paper elevation={0} sx={{ p: 6, borderRadius: '16px', border: '1px dashed #ddd', textAlign: 'center' }}>

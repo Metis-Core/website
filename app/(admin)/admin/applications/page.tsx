@@ -4,6 +4,8 @@ import { DownloadOutlined, VisibilityOutlined } from '@mui/icons-material';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { JobApplication, CareerPosition } from '@/lib/supabase/types';
+import SearchBar from '@/components/search-bar';
+import { matchesQuery } from '@/lib/search';
 import ApplicationStatusSelect from './_components/application-status-select';
 import DeleteApplicationButton from './_components/delete-application-button';
 
@@ -11,14 +13,22 @@ export const metadata = { title: 'Applications · Admin' };
 
 type Row = JobApplication & { career_positions: Pick<CareerPosition, 'title' | 'slug'> | null };
 
-export default async function AdminApplicationsPage() {
+export default async function AdminApplicationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   await requireAdmin();
+  const { q = '' } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from('job_applications')
     .select('*, career_positions(title, slug)')
     .order('created_at', { ascending: false });
-  const items = (data ?? []) as Row[];
+  const all = (data ?? []) as Row[];
+  const items = q
+    ? all.filter((a) => matchesQuery([a.full_name, a.email, a.phone, a.status, a.career_positions?.title, a.career_positions?.slug], q))
+    : all;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -27,9 +37,11 @@ export default async function AdminApplicationsPage() {
           Applications
         </Typography>
         <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-          {items.length} total application{items.length === 1 ? '' : 's'}.
+          {items.length} of {all.length} application{all.length === 1 ? '' : 's'}{q ? ` matching “${q}”` : ''}.
         </Typography>
       </Box>
+
+      <SearchBar placeholder="Search applications by applicant name, email, role…" />
 
       {items.length === 0 ? (
         <Paper elevation={0} sx={{ p: 6, borderRadius: '16px', border: '1px dashed #ddd', textAlign: 'center' }}>

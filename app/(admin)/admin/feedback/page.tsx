@@ -2,16 +2,24 @@ import { Box, Paper, Rating, Typography } from '@mui/material';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { Feedback } from '@/lib/supabase/types';
+import SearchBar from '@/components/search-bar';
+import { matchesQuery } from '@/lib/search';
 import FeedbackStatusSelect from './_components/feedback-status-select';
 import DeleteFeedbackButton from './_components/delete-feedback-button';
 
 export const metadata = { title: 'Feedback · Admin' };
 
-export default async function AdminFeedbackPage() {
+export default async function AdminFeedbackPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   await requireAdmin();
+  const { q = '' } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.from('feedback').select('*').order('created_at', { ascending: false });
-  const items = (data ?? []) as Feedback[];
+  const all = (data ?? []) as Feedback[];
+  const items = q ? all.filter((f) => matchesQuery([f.name, f.email, f.message, f.category, f.status], q)) : all;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -20,9 +28,11 @@ export default async function AdminFeedbackPage() {
           Feedback
         </Typography>
         <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-          {items.length} total submission{items.length === 1 ? '' : 's'}.
+          {items.length} of {all.length} submission{all.length === 1 ? '' : 's'}{q ? ` matching “${q}”` : ''}.
         </Typography>
       </Box>
+
+      <SearchBar placeholder="Search feedback by name, email, message, status…" />
 
       {items.length === 0 ? (
         <Paper elevation={0} sx={{ p: 6, borderRadius: '16px', border: '1px dashed #ddd', textAlign: 'center' }}>

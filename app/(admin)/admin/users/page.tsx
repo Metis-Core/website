@@ -2,16 +2,26 @@ import { Box, Paper, Typography } from '@mui/material';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { Profile } from '@/lib/supabase/types';
+import SearchBar from '@/components/search-bar';
+import { matchesQuery } from '@/lib/search';
 import UserRoleSelect from './_components/user-role-select';
 import DeleteUserButton from './_components/delete-user-button';
 
 export const metadata = { title: 'Users · Admin' };
 
-export default async function AdminUsersPage() {
+export default async function AdminUsersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   const { userId: myId } = await requireAdmin();
+  const { q = '' } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
-  const items = (data ?? []) as Profile[];
+  const all = (data ?? []) as Profile[];
+  const items = q
+    ? all.filter((p) => matchesQuery([p.full_name, p.email, p.organization, p.phone, p.role], q))
+    : all;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -20,9 +30,11 @@ export default async function AdminUsersPage() {
           Users
         </Typography>
         <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-          {items.length} registered user{items.length === 1 ? '' : 's'}. You can promote a user to admin or demote back.
+          {items.length} of {all.length} registered user{all.length === 1 ? '' : 's'}{q ? ` matching “${q}”` : ''}. Promote a user to admin or demote back.
         </Typography>
       </Box>
+
+      <SearchBar placeholder="Search users by name, email, organization, role…" />
 
       <Paper elevation={0} sx={{ borderRadius: '12px', border: '1px solid #eee', overflow: 'hidden' }}>
         {items.map((p, i) => (

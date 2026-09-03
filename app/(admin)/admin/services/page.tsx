@@ -4,17 +4,25 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import type { Service } from '@/lib/supabase/types';
 import CustomButton from '@/components/button';
+import SearchBar from '@/components/search-bar';
 import { LinkIconButton } from '@/components/link-wrappers';
+import { matchesQuery } from '@/lib/search';
 import ServiceActiveToggle from './_components/service-active-toggle';
 import DeleteServiceButton from './_components/delete-service-button';
 
 export const metadata = { title: 'Services · Admin' };
 
-export default async function AdminServicesPage() {
+export default async function AdminServicesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
   await requireAdmin();
+  const { q = '' } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data } = await supabase.from('services').select('*').order('sort_order', { ascending: true });
-  const items = (data ?? []) as Service[];
+  const all = (data ?? []) as Service[];
+  const items = q ? all.filter((s) => matchesQuery([s.title, s.slug, s.subtitle, s.layer, ...s.capabilities], q)) : all;
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -24,13 +32,15 @@ export default async function AdminServicesPage() {
             Services
           </Typography>
           <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
-            {items.length} service{items.length === 1 ? '' : 's'}. Toggle to show / hide on the public site.
+            {items.length} of {all.length} service{all.length === 1 ? '' : 's'}{q ? ` matching “${q}”` : ''}. Toggle to show / hide on the public site.
           </Typography>
         </Box>
         <CustomButton href="/admin/services/new" variant="contained">
           New service
         </CustomButton>
       </Box>
+
+      <SearchBar placeholder="Search services by title, slug, capability…" />
 
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
         {items.map((s) => (
