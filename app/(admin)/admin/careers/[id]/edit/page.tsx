@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { Box, Paper, Typography } from '@mui/material';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
-import { updateCareerAction, type FormState } from '@/app/actions/catalog';
+import { updateCareerAction } from '@/app/actions/catalog';
 import CareerForm from '../../_components/career-form';
 import type { CareerPosition } from '@/lib/supabase/types';
 
@@ -15,7 +15,7 @@ export default async function EditCareerPage({ params }: { params: Promise<{ id:
   const { data: career } = await supabase.from('career_positions').select('*').eq('id', id).maybeSingle<CareerPosition>();
   if (!career) notFound();
 
-  const boundAction = async (state: FormState, formData: FormData) => updateCareerAction(id, state, formData);
+  const boundAction = updateCareerAction.bind(null, id);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
