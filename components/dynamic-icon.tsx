@@ -31,7 +31,7 @@ const REGISTRY = {
 
 export type IconName = keyof typeof REGISTRY;
 
-export function DynamicIcon({ name, ...props }: { name: string | null | undefined } & SvgIconProps) {
+export function DynamicIcon({ name, ...props }: { name?: string | null } & SvgIconProps) {
   const Cmp = (name && (REGISTRY as Record<string, React.ComponentType<SvgIconProps>>)[name]) || Extension;
   return <Cmp {...props} />;
 }
