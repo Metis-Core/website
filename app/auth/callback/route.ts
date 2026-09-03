@@ -1,0 +1,19 @@
+import { NextResponse, type NextRequest } from 'next/server';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+
+export async function GET(request: NextRequest) {
+  const url = new URL(request.url);
+  const code = url.searchParams.get('code');
+  const nextParam = url.searchParams.get('next') ?? '/account';
+  const next = nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/account';
+
+  if (code) {
+    const supabase = await createSupabaseServerClient();
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (!error) {
+      return NextResponse.redirect(`${url.origin}${next}`);
+    }
+  }
+
+  return NextResponse.redirect(`${url.origin}/login?error=auth_callback`);
+}

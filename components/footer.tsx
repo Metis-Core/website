@@ -23,11 +23,11 @@ const Footer: FC = () => {
           {/* Brand Section */}
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <Image
-              src="/logo/logo.png"
-              alt="Metis logo"
-              width={120}
-              height={40}
-              style={{ marginBottom: '16px' }}
+              src="/assets/PNG/LOGO%20WHITE.png"
+              alt="Metis Analytica"
+              width={180}
+              height={56}
+              style={{ marginBottom: '16px', height: 48, width: 'auto', objectFit: 'contain' }}
             />
             <Typography variant="body2" sx={{ color: '#aaa', mb: 2 }}>
               Data Infrastructure. Data Solutions. Trusted Data Custodians.
@@ -113,7 +113,7 @@ const Footer: FC = () => {
         <Box sx={{ borderTop: '1px solid #333', py: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
             <Typography variant="body2" sx={{ color: '#aaa' }}>
-              © {currentYear} Metis. All rights reserved.
+              © {currentYear} Metis Analytica. All rights reserved.
             </Typography>
             <Box sx={{ display: 'flex', gap: 3 }}>
               <Link href="#" sx={{ color: '#aaa', fontSize: '0.875rem', '&:hover': { color: '#fff' } }}>

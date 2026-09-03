@@ -18,10 +18,13 @@ import {
   Menu,
   MenuItem,
   Collapse,
+  Divider,
 } from '@mui/material';
 import { Menu as MenuIcon, Close as CloseIcon, ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import NavbarSearchButton from '@/components/navbar-search';
+import AccountMenu, { type AccountMenuUser } from '@/components/account-menu';
+import CustomButton from '@/components/button';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   background: 'rgba(255, 255, 255, 0.8)',
@@ -54,6 +57,8 @@ const navLinks = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
   { label: 'Services', href: '/services' },
+  { label: 'Consultation', href: '/consultation' },
+  { label: 'Careers', href: '/careers' },
 ];
 
 const products = [
@@ -63,7 +68,7 @@ const products = [
   { label: 'Metis Analytics', href: '/products/metis-analytics', color: '#f57c00' },
 ];
 
-const Navbar: FC = () => {
+const Navbar: FC<{ user?: AccountMenuUser | null }> = ({ user = null }) => {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
@@ -87,9 +92,16 @@ const Navbar: FC = () => {
   const drawer = (
     <Box sx={{ p: 2, width: '100%' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, gap: 1 }}>
-        <Typography variant="h6" sx={{ fontWeight: 700 }}>
-          Metis
-        </Typography>
+        <Link href="/" onClick={handleDrawerToggle} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          <Image
+            src="/assets/PNG/LOGO%20DARK%20GREY.png"
+            alt="Metis Analytica"
+            width={140}
+            height={40}
+            style={{ height: 36, width: 'auto', objectFit: 'contain' }}
+            priority
+          />
+        </Link>
         <Box sx={{ flex: 1 }}>
           <NavbarSearchButton />
         </Box>
@@ -214,6 +226,41 @@ const Navbar: FC = () => {
           })()}
         </ListItem>
       </List>
+
+      <Divider sx={{ my: 2 }} />
+
+      {user ? (
+        <Box sx={{ px: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Typography variant="caption" sx={{ color: '#666', fontWeight: 700, letterSpacing: '0.08em' }}>
+            SIGNED IN AS
+          </Typography>
+          <Typography variant="body2" sx={{ fontWeight: 700 }} noWrap>
+            {user.fullName ?? user.email}
+          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, mt: 1 }}>
+            <MuiLink component={Link} href="/account" onClick={handleDrawerToggle} sx={{ color: '#000', textDecoration: 'none', py: 0.5 }}>
+              My profile
+            </MuiLink>
+            <MuiLink component={Link} href="/account/settings" onClick={handleDrawerToggle} sx={{ color: '#000', textDecoration: 'none', py: 0.5 }}>
+              Settings
+            </MuiLink>
+            {user.role === 'admin' && (
+              <MuiLink component={Link} href="/admin" onClick={handleDrawerToggle} sx={{ color: '#000', textDecoration: 'none', py: 0.5, fontWeight: 700 }}>
+                Admin dashboard
+              </MuiLink>
+            )}
+          </Box>
+        </Box>
+      ) : (
+        <Box sx={{ px: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <CustomButton component={Link} href="/login" variant="outlined" onClick={handleDrawerToggle} fullWidth>
+            Sign in
+          </CustomButton>
+          <CustomButton component={Link} href="/register" variant="contained" onClick={handleDrawerToggle} fullWidth>
+            Create account
+          </CustomButton>
+        </Box>
+      )}
     </Box>
   );
 
@@ -223,29 +270,19 @@ const Navbar: FC = () => {
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', px: 2, gap: 3 }}>
         {/* Logo, Brand & Search */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {/* Logo & Brand */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          {/* Logo & Brand — wordmark on every breakpoint, scales down on mobile */}
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <Box sx={{ position: 'relative', width: { xs: 130, sm: 170 }, height: { xs: 34, sm: 42 } }}>
               <Image
-                src="/logo/logo.png"
-                alt="Metis logo"
-                width={48}
-                height={48}
+                src="/assets/PNG/LOGO%20DARK%20GREY.png"
+                alt="Metis Analytica"
+                fill
+                sizes="(max-width: 600px) 130px, 170px"
+                style={{ objectFit: 'contain', objectPosition: 'left center' }}
+                priority
               />
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 700,
-                  color: '#000',
-                  display: { xs: 'none', sm: 'block' },
-                  fontSize: '1.25rem',
-                  ml: 1,
-                }}
-              >
-                Metis
-              </Typography>
-            </Link>
-          </Box>
+            </Box>
+          </Link>
 
           {/* Search Bar - Close to Logo */}
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
@@ -443,6 +480,31 @@ const Navbar: FC = () => {
           >
             Contact
           </MuiLink>
+
+          {/* Auth CTA / Account menu */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 1 }}>
+            {user ? (
+              <AccountMenu user={user} />
+            ) : (
+              <>
+                <MuiLink
+                  component={Link}
+                  href="/login"
+                  sx={{ color: '#000', textDecoration: 'none', fontWeight: 500, fontSize: '0.95rem' }}
+                >
+                  Sign in
+                </MuiLink>
+                <CustomButton
+                  component={Link}
+                  href="/register"
+                  variant="contained"
+                  sx={{ py: 0.5, px: 2, fontSize: '0.85rem' }}
+                >
+                  Get started
+                </CustomButton>
+              </>
+            )}
+          </Box>
         </Box>
 
         {/* Mobile Menu Button */}
