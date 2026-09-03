@@ -36,13 +36,16 @@ export async function updateSession(request: NextRequest) {
   if (!user && PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
+    url.search = '';
     url.searchParams.set('next', pathname);
     return NextResponse.redirect(url);
   }
 
   if (user && AUTH_ROUTES.includes(pathname)) {
+    const nextParam = request.nextUrl.searchParams.get('next');
     const url = request.nextUrl.clone();
-    url.pathname = '/account';
+    url.search = '';
+    url.pathname = nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/account';
     return NextResponse.redirect(url);
   }
 

@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from './server';
 import type { Profile } from './types';
 
@@ -16,23 +17,46 @@ export async function getCurrentUserAndProfile(): Promise<{
     .from('profiles')
     .select('*')
     .eq('id', user.id)
+    .maybeSingle<Profile>();
+
+  if (profile) return { userId: user.id, profile };
+
+  // Auth trigger missed this user — self-heal so we don't lock them out.
+  const { data: created } = await supabase
+    .from('profiles')
+    .upsert(
+      {
+        id: user.id,
+        email: user.email ?? '',
+        full_name:
+          (user.user_metadata?.full_name as string | undefined) ??
+          (user.user_metadata?.name as string | undefined) ??
+          null,
+      },
+      { onConflict: 'id' },
+    )
+    .select('*')
     .single<Profile>();
 
-  return { userId: user.id, profile: profile ?? null };
+  return { userId: user.id, profile: created ?? null };
 }
 
 export async function requireUser(): Promise<{ userId: string; profile: Profile }> {
   const { userId, profile } = await getCurrentUserAndProfile();
   if (!userId || !profile) {
-    throw new Error('Not authenticated');
+    // proxy.ts already sets ?next=<pathname>; the layout also redirects.
+    redirect('/login');
   }
   return { userId, profile };
 }
 
 export async function requireAdmin(): Promise<{ userId: string; profile: Profile }> {
-  const { userId, profile } = await requireUser();
+  const { userId, profile } = await getCurrentUserAndProfile();
+  if (!userId || !profile) {
+    redirect('/login');
+  }
   if (profile.role !== 'admin') {
-    throw new Error('Forbidden');
+    redirect('/account');
   }
   return { userId, profile };
 }

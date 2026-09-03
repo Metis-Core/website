@@ -88,10 +88,10 @@ export default async function Services() {
         description="From infrastructure to intelligence—Metis builds the complete data stack your institution needs to compete and grow."
       >
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-          <CustomButton component={Link} href="/consultation" variant="contained">
+          <CustomButton href="/consultation" variant="contained">
             Book a Consultation
           </CustomButton>
-          <CustomButton component={Link} href="/contact" variant="outlined">
+          <CustomButton href="/contact" variant="outlined">
             Talk to Sales
           </CustomButton>
         </Box>
@@ -264,7 +264,7 @@ export default async function Services() {
             Let&apos;s discuss which layers of our data operating system your institution needs.
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <CustomButton component={Link} href="/consultation" variant="contained">
+            <CustomButton href="/consultation" variant="contained">
               Book a Consultation
             </CustomButton>
           </Box>

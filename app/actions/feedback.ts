@@ -2,6 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { sendEmail, adminNotificationEmail } from '@/lib/email/mailer';
+import { feedbackAdminEmail } from '@/lib/email/templates';
 
 export type FormState = { error?: string; success?: string } | null;
 
@@ -36,6 +38,15 @@ export async function submitFeedbackAction(_prev: FormState, formData: FormData)
     message,
   });
   if (error) return { error: error.message };
+
+  const adminTo = adminNotificationEmail();
+  if (adminTo) {
+    await sendEmail({
+      to: adminTo,
+      replyTo: email,
+      ...feedbackAdminEmail({ name, email, category, rating, message }),
+    });
+  }
 
   revalidatePath('/account/feedback');
   revalidatePath('/admin/feedback');
