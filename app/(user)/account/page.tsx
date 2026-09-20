@@ -10,10 +10,7 @@ export default async function AccountPage() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       <Box>
-        <Typography variant="h4" sx={{ fontWeight: 700, color: '#000' }}>
-          My profile
-        </Typography>
-        <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           Keep your details up to date so we can reach you about consultations and applications.
         </Typography>
       </Box>

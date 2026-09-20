@@ -1,9 +1,11 @@
-import { FC } from 'react';
-import { Box, Container, Typography, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { VerifiedUser, Lightbulb, Gavel, AutoFixHigh } from '@mui/icons-material';
 import Hero from '@/components/hero';
 import StatsCard from '@/components/stats-card';
 import CustomButton from '@/components/button';
+import PageSection from '@/components/page-section';
+import SectionHeading from '@/components/section-heading';
+import { accentAt } from '@/lib/brand';
 
 export const metadata = {
   title: 'About',
@@ -17,31 +19,27 @@ export const metadata = {
   },
 };
 
-const About: FC = () => {
+export default function About() {
   const coreValues = [
     {
       icon: <VerifiedUser sx={{ fontSize: 32 }} />,
       title: 'Data Custodianship',
-      description: 'We take responsibility for your institutional data. It\'s protected, structured, and evolves with your needs.',
-      color: '#737373',
+      description: "We take responsibility for your institutional data. It's protected, structured, and evolves with your needs.",
     },
     {
       icon: <Lightbulb sx={{ fontSize: 32 }} />,
       title: 'Infrastructure-First',
       description: 'Strong foundations enable innovation. We design for scale, reliability, and long-term institutional value.',
-      color: '#dc004e',
     },
     {
       icon: <Gavel sx={{ fontSize: 32 }} />,
       title: 'Security & Governance',
       description: 'Security is embedded, not bolted on. Clear ownership, transparent processes, and ethical data use.',
-      color: '#00897b',
     },
     {
       icon: <AutoFixHigh sx={{ fontSize: 32 }} />,
       title: 'Practical Impact',
-      description: 'We don\'t build for theory. Every system drives real decisions, efficiency, and institutional accountability.',
-      color: '#f57c00',
+      description: "We don't build for theory. Every system drives real decisions, efficiency, and institutional accountability.",
     },
   ];
 
@@ -66,190 +64,123 @@ const About: FC = () => {
     },
   ];
 
+  const differentiators = [
+    {
+      title: 'Not a BI Shop',
+      body: "We don't just build dashboards. We architect the entire data operating system beneath them.",
+    },
+    {
+      title: 'Not a Cloud Reseller',
+      body: 'We specialize in the hardest part: sovereign data architecture and automation engineering.',
+    },
+    {
+      title: 'The Trusted Point of Contact',
+      body: 'We sit quietly but powerfully between raw data and institutional decisions—owning the responsibility for both.',
+    },
+  ];
+
   return (
     <>
-      {/* Hero Section */}
       <Hero
         title="About Metis"
         subtitle="The Company"
         description="Metis is a data custodian and partner that designs, builds, and safeguards data infrastructures while transforming data into long-term institutional value."
       />
 
-      {/* Core Identity */}
-      <Container maxWidth="lg" sx={{ py: 12 }}>
-        <Grid container spacing={6}>
+      <PageSection>
+        <Grid container spacing={{ xs: 4, md: 6 }}>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Box>
-              <Typography
-                variant="h3"
-                sx={{ fontWeight: 700, mb: 3, color: '#000' }}
-              >
-                Who We Are
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{ color: '#666', lineHeight: 1.8, mb: 4, fontSize: '1.08rem' }}
-              >
-                Metis is a pure data and automation company. We don't sell IT support. We don't sell generic software. We build data operating systems with embedded automation.
-              </Typography>
-              <Typography
-                variant="body1"
-                sx={{ color: '#666', lineHeight: 1.8, mb: 4, fontSize: '1.08rem' }}
-              >
-                We work where data, software, and decision-making meet. Our mission: to help organizations—NGOs, SMEs, corporations, and governments—transform data from a liability into a strategic asset.
-              </Typography>
-              <CustomButton variant="contained">Learn Our Approach</CustomButton>
-            </Box>
+            <Typography component="h2" sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '1.35rem', md: '1.75rem' } }}>
+              Who We Are
+            </Typography>
+            <Typography sx={{ color: 'text.secondary', lineHeight: 1.8, mb: 2, fontSize: { xs: '0.95rem', md: '1.05rem' } }}>
+              Metis is a pure data and automation company. We don&apos;t sell IT support. We don&apos;t sell generic software. We build data operating systems with embedded automation.
+            </Typography>
+            <Typography sx={{ color: 'text.secondary', lineHeight: 1.8, mb: 3, fontSize: { xs: '0.95rem', md: '1.05rem' } }}>
+              We work where data, software, and decision-making meet. Our mission: to help organizations—NGOs, SMEs, corporations, and governments—transform data from a liability into a strategic asset.
+            </Typography>
+            <CustomButton href="/services" variant="contained">Learn Our Approach</CustomButton>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <Box>
-              <Typography
-                variant="h3"
-                sx={{ fontWeight: 700, mb: 3, color: '#000' }}
-              >
-                What Sets Us Apart
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-                <Box>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#737373', mb: 1 }}>
-                    Not a BI Shop
+            <Typography component="h2" sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '1.35rem', md: '1.75rem' } }}>
+              What Sets Us Apart
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+              {differentiators.map((item) => (
+                <Box key={item.title}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'primary.main', mb: 0.5 }}>
+                    {item.title}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
-                    We don't just build dashboards. We architect the entire data operating system beneath them.
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    {item.body}
                   </Typography>
                 </Box>
-                <Box>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#737373', mb: 1 }}>
-                    Not a Cloud Reseller
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
-                    We specialize in the hardest part: sovereign data architecture and automation engineering.
-                  </Typography>
-                </Box>
-                <Box>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#737373', mb: 1 }}>
-                    The Trusted Point of Contact
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
-                    We sit quietly but powerfully between raw data and institutional decisions—owning the responsibility for both.
-                  </Typography>
-                </Box>
-              </Box>
+              ))}
             </Box>
           </Grid>
         </Grid>
-      </Container>
+      </PageSection>
 
-      {/* Core Values */}
-      <Container maxWidth="lg" sx={{ py: 12 }}>
-        <Box sx={{ textAlign: 'center', mb: 8 }}>
-          <Typography
-            variant="h2"
-            sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 700, color: '#000', mb: 2 }}
-          >
-            Our Core Values
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{ color: '#666', maxWidth: '600px', mx: 'auto', fontSize: '1.08rem' }}
-          >
-            The principles that guide everything we build
-          </Typography>
-        </Box>
-
-        <Grid container spacing={3}>
+      <PageSection>
+        <SectionHeading
+          title="Our Core Values"
+          description="The principles that guide everything we build"
+        />
+        <Grid container spacing={{ xs: 2, md: 3 }}>
           {coreValues.map((value, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={value.title}>
               <StatsCard
                 icon={value.icon}
                 label={value.title}
                 description={value.description}
-                color={value.color}
+                color={accentAt(index)}
               />
             </Grid>
           ))}
         </Grid>
-      </Container>
+      </PageSection>
 
-      {/* Growth Phases */}
-      <Container maxWidth="lg" sx={{ py: 12 }}>
-        <Box sx={{ textAlign: 'center', mb: 8 }}>
-          <Typography
-            variant="h2"
-            sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 700, color: '#000', mb: 2 }}
-          >
-            Our Evolution
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{ color: '#666', maxWidth: '700px', mx: 'auto', fontSize: '1.08rem' }}
-          >
-            From Foundation Builder to Data Intelligence Platform—a scalable path to institutional value
-          </Typography>
-        </Box>
-
-        <Grid container spacing={3}>
+      <PageSection>
+        <SectionHeading
+          title="Our Evolution"
+          description="From Foundation Builder to Data Intelligence Platform—a scalable path to institutional value"
+        />
+        <Grid container spacing={{ xs: 2, md: 3 }}>
           {phases.map((item, index) => (
-            <Grid size={{ xs: 12, md: 4 }} key={index}>
+            <Grid size={{ xs: 12, md: 4 }} key={item.phase}>
               <StatsCard
                 title={item.title}
                 label={item.phase}
                 description={item.description}
                 features={item.items}
-                color={['#737373', '#dc004e', '#00897b'][index]}
+                color={accentAt(index)}
               />
             </Grid>
           ))}
         </Grid>
-      </Container>
+      </PageSection>
 
-      {/* Trust Statement */}
-      <Box sx={{ backgroundColor: '#f9f9f9', py: 8, borderRadius: '16px', mx: 2, mb: 8 }}>
-        <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography
-              variant="h3"
-              sx={{ fontWeight: 700, color: '#000', mb: 3 }}
-            >
-              Built to Be Trusted
-            </Typography>
-            <Grid container spacing={3} sx={{ maxWidth: '900px', mx: 'auto' }}>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#737373', mb: 1 }}>
-                    Secure by Design
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
-                    Security isn't an afterthought. It's embedded into every layer of our systems.
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#dc004e', mb: 1 }}>
-                    Clear Data Ownership
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
-                    Your data is yours. We don't monetize it. We protect and empower it.
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <Box>
-                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#00897b', mb: 1 }}>
-                    Long-term Reliability
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: '#666' }}>
-                    We think in years, not quarters. Your data infrastructure evolves with your needs.
-                  </Typography>
-                </Box>
-              </Grid>
+      <Box sx={{ bgcolor: 'var(--surface)', py: { xs: 5, md: 8 }, px: { xs: 2, sm: 3 } }}>
+        <SectionHeading title="Built to Be Trusted" />
+        <Grid container spacing={3} sx={{ maxWidth: 900, mx: 'auto' }}>
+          {[
+            { title: 'Secure by Design', body: "Security isn't an afterthought. It's embedded into every layer of our systems." },
+            { title: 'Clear Data Ownership', body: "Your data is yours. We don't monetize it. We protect and empower it." },
+            { title: 'Long-term Reliability', body: 'We think in years, not quarters. Your data infrastructure evolves with your needs.' },
+          ].map((item, index) => (
+            <Grid size={{ xs: 12, md: 4 }} key={item.title}>
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: accentAt(index), mb: 1, fontSize: '1.05rem' }}>
+                  {item.title}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {item.body}
+                </Typography>
+              </Box>
             </Grid>
-          </Box>
-        </Container>
+          ))}
+        </Grid>
       </Box>
     </>
   );
-};
-
-export default About;
+}

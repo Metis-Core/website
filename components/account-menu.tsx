@@ -55,7 +55,7 @@ export default function AccountMenu({ user }: { user: AccountMenuUser }) {
         <Avatar
           src={user.avatarUrl ?? undefined}
           alt={displayName}
-          sx={{ width: 36, height: 36, bgcolor: '#737373', color: '#fff', fontSize: '0.9rem', fontWeight: 700 }}
+          sx={{ width: 36, height: 36, bgcolor: 'primary.main', color: '#fff', fontSize: '0.9rem', fontWeight: 700 }}
         >
           {initials}
         </Avatar>
@@ -80,14 +80,14 @@ export default function AccountMenu({ user }: { user: AccountMenuUser }) {
         }}
       >
         <Box sx={{ px: 2, py: 1.5 }}>
-          <Typography variant="body2" sx={{ fontWeight: 700, color: '#000' }} noWrap>
+          <Typography variant="body2" sx={{ fontWeight: 700 }} noWrap>
             {displayName}
           </Typography>
-          <Typography variant="caption" sx={{ color: '#666' }} noWrap component="div">
+          <Typography variant="caption" sx={{ color: 'text.secondary' }} noWrap component="div">
             {user.email}
           </Typography>
           {user.role === 'admin' && (
-            <Chip label="Admin" size="small" sx={{ mt: 0.75, bgcolor: '#000', color: '#fff', fontWeight: 700, fontSize: '0.7rem' }} />
+            <Chip label="Admin" size="small" sx={{ mt: 0.75, bgcolor: 'secondary.main', color: '#fff', fontWeight: 700, fontSize: '0.7rem' }} />
           )}
         </Box>
         <Divider />

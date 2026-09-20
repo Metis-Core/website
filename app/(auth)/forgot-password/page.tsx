@@ -11,10 +11,10 @@ export default function ForgotPasswordPage() {
 
   return (
     <Box>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, color: '#000' }}>
+      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '1.5rem', md: '2rem' } }}>
         Reset your password
       </Typography>
-      <Typography variant="body2" sx={{ color: '#666', mb: 3 }}>
+      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
         Enter your email and we&apos;ll send a link to reset your password.
       </Typography>
 
@@ -30,9 +30,9 @@ export default function ForgotPasswordPage() {
         </Stack>
       </form>
 
-      <Typography variant="body2" sx={{ color: '#666', mt: 3, textAlign: 'center' }}>
+      <Typography variant="body2" sx={{ color: 'text.secondary', mt: 3, textAlign: 'center' }}>
         Remembered it?{' '}
-        <Link href="/login" style={{ color: '#000', fontWeight: 600 }}>
+        <Link href="/login" style={{ fontWeight: 600 }}>
           Back to sign in
         </Link>
       </Typography>

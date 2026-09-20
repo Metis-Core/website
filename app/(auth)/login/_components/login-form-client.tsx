@@ -11,10 +11,10 @@ export default function LoginFormClient({ next }: { next: string }) {
 
   return (
     <>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, color: '#000' }}>
+      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '1.5rem', md: '2rem' } }}>
         Welcome back
       </Typography>
-      <Typography variant="body2" sx={{ color: '#666', mb: 3 }}>
+      <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
         Log in to manage your consultations, feedback and account.
       </Typography>
 
@@ -38,14 +38,14 @@ export default function LoginFormClient({ next }: { next: string }) {
         </Stack>
       </form>
 
-      <Stack direction="row" justifyContent="space-between" sx={{ mt: 3 }}>
-        <Typography variant="body2" sx={{ color: '#666' }}>
+      <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" gap={1.5} sx={{ mt: 3 }}>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           New here?{' '}
-          <Link href="/register" style={{ color: '#000', fontWeight: 600 }}>
+          <Link href="/register" style={{ fontWeight: 600 }}>
             Create account
           </Link>
         </Typography>
-        <Link href="/forgot-password" style={{ color: '#666', fontSize: '0.875rem' }}>
+        <Link href="/forgot-password" style={{ fontSize: '0.875rem' }}>
           Forgot password?
         </Link>
       </Stack>

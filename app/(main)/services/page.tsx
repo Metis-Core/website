@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { Box, Chip, Container, Grid, Typography, Card } from '@mui/material';
+import { Box, Chip, Grid, Typography, Card } from '@mui/material';
 import {
   BusinessOutlined,
   PeopleOutlined,
@@ -9,8 +8,12 @@ import {
 import Hero from '@/components/hero';
 import StatsCard from '@/components/stats-card';
 import CustomButton from '@/components/button';
+import PageSection from '@/components/page-section';
+import SectionHeading from '@/components/section-heading';
+import CtaBand from '@/components/cta-band';
 import { DynamicIcon } from '@/components/dynamic-icon';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { accentAt } from '@/lib/brand';
 import type { Service } from '@/lib/supabase/types';
 
 export const metadata = { title: 'Services · Metis Analytica' };
@@ -25,7 +28,6 @@ const segments = [
       'Grant reporting automation',
       'Operational efficiency',
     ],
-    color: '#1976d2',
   },
   {
     name: 'SMEs & Growing Companies',
@@ -36,7 +38,6 @@ const segments = [
       'Customer data platforms',
       'Financial forecasting',
     ],
-    color: '#dc004e',
   },
   {
     name: 'Corporations & Large Enterprises',
@@ -47,7 +48,6 @@ const segments = [
       'Real-time operational dashboards',
       'Advanced forecasting',
     ],
-    color: '#00897b',
   },
   {
     name: 'Government & Public Sector',
@@ -58,7 +58,6 @@ const segments = [
       'Public sector analytics',
       'Compliance & reporting',
     ],
-    color: '#f57c00',
   },
 ];
 
@@ -87,189 +86,158 @@ export default async function Services() {
         subtitle="The 4-Layer Data Operating System"
         description="From infrastructure to intelligence—Metis builds the complete data stack your institution needs to compete and grow."
       >
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-          <CustomButton href="/consultation" variant="contained">
-            Book a Consultation
-          </CustomButton>
-          <CustomButton href="/contact" variant="outlined">
-            Talk to Sales
-          </CustomButton>
-        </Box>
+        <CustomButton href="/consultation" variant="contained">
+          Book a Consultation
+        </CustomButton>
+        <CustomButton href="/contact" variant="outlined">
+          Talk to Sales
+        </CustomButton>
       </Hero>
 
-      <Container maxWidth="lg" sx={{ py: 12 }}>
-        <Box sx={{ maxWidth: '900px', mx: 'auto', textAlign: 'center', mb: 8 }}>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: '#000', mb: 3 }}>
-            Why a Layered Approach?
-          </Typography>
-          <Typography variant="body1" sx={{ color: '#666', lineHeight: 1.8, fontSize: '1.08rem', mb: 4 }}>
-            Most data companies specialize in one layer. We specialize in all of them:
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Typography variant="body2" sx={{ color: '#666', fontWeight: 600 }}>
-                ✓ No vendor lock-in from missing layers
+      <PageSection>
+        <SectionHeading title="Why a Layered Approach?" />
+        <Typography sx={{ color: 'text.secondary', lineHeight: 1.8, fontSize: { xs: '0.95rem', md: '1.05rem' }, textAlign: 'center', mb: 3, maxWidth: 720, mx: 'auto' }}>
+          Most data companies specialize in one layer. We specialize in all of them:
+        </Typography>
+        <Grid container spacing={2}>
+          {[
+            'No vendor lock-in from missing layers',
+            'Seamless integration across your entire stack',
+            'One trusted point of contact from infrastructure to insights',
+          ].map((item) => (
+            <Grid size={{ xs: 12, md: 4 }} key={item}>
+              <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 600, textAlign: 'center' }}>
+                {item}
               </Typography>
             </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Typography variant="body2" sx={{ color: '#666', fontWeight: 600 }}>
-                ✓ Seamless integration across your entire stack
-              </Typography>
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Typography variant="body2" sx={{ color: '#666', fontWeight: 600 }}>
-                ✓ One trusted point of contact from infrastructure to insights
-              </Typography>
-            </Grid>
-          </Grid>
-        </Box>
-      </Container>
+          ))}
+        </Grid>
+      </PageSection>
 
-      {/* Service layers (DB-backed) */}
-      <Container maxWidth="lg" sx={{ py: 8 }}>
+      <PageSection>
         {layers.map((layer) => (
           <Box
             key={layer.id}
             sx={{
-              mb: 6,
-              p: 4,
+              mb: { xs: 3, md: 4 },
+              p: { xs: 2.5, md: 4 },
               borderRadius: '12px',
-              border: `2px solid ${layer.color}`,
+              border: `1.5px solid ${layer.color}`,
               backgroundColor: `${layer.color}0a`,
             }}
           >
-            <Grid container spacing={3} sx={{ alignItems: 'flex-start' }}>
+            <Grid container spacing={2} sx={{ alignItems: 'flex-start' }}>
               <Grid size={{ xs: 12, md: 1 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'center', color: layer.color }}>
+                <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-start', md: 'center' }, color: layer.color }}>
                   <DynamicIcon name={layer.icon} sx={{ fontSize: 40 }} />
                 </Box>
               </Grid>
               <Grid size={{ xs: 12, md: 11 }}>
-                <Box>
-                  {layer.layer && (
-                    <Chip
-                      label={layer.layer}
-                      sx={{
-                        backgroundColor: layer.color,
-                        color: '#fff',
-                        fontWeight: 700,
-                        fontSize: '0.75rem',
-                        mb: 1,
-                      }}
-                    />
-                  )}
-                  <Typography variant="h5" sx={{ fontWeight: 700, color: '#000', mb: 1 }}>
-                    {layer.title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: '#666', mb: 3, lineHeight: 1.7 }}>
-                    {layer.description}
-                  </Typography>
+                {layer.layer && (
+                  <Chip
+                    label={layer.layer}
+                    sx={{
+                      backgroundColor: layer.color,
+                      color: '#fff',
+                      fontWeight: 700,
+                      fontSize: '0.75rem',
+                      mb: 1,
+                    }}
+                  />
+                )}
+                <Typography component="h3" sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '1.15rem', md: '1.4rem' } }}>
+                  {layer.title}
+                </Typography>
+                <Typography sx={{ color: 'text.secondary', mb: 2, lineHeight: 1.7, fontSize: { xs: '0.95rem', md: '1rem' } }}>
+                  {layer.description}
+                </Typography>
 
-                  {layer.capabilities.length > 0 && (
-                    <Box sx={{ mb: 3 }}>
-                      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#000', mb: 1 }}>
-                        What We Deliver:
-                      </Typography>
-                      <Grid container spacing={1}>
-                        {layer.capabilities.map((cap) => (
-                          <Grid size={{ xs: 12, sm: 6 }} key={cap}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                              <Box
-                                sx={{
-                                  width: '6px',
-                                  height: '6px',
-                                  borderRadius: '50%',
-                                  backgroundColor: layer.color,
-                                  flexShrink: 0,
-                                }}
-                              />
-                              <Typography variant="body2" sx={{ color: '#666' }}>
-                                {cap}
-                              </Typography>
-                            </Box>
-                          </Grid>
-                        ))}
-                      </Grid>
-                    </Box>
-                  )}
-                </Box>
+                {layer.capabilities.length > 0 && (
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
+                      What We Deliver:
+                    </Typography>
+                    <Grid container spacing={1}>
+                      {layer.capabilities.map((cap) => (
+                        <Grid size={{ xs: 12, sm: 6 }} key={cap}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Box
+                              sx={{
+                                width: 6,
+                                height: 6,
+                                borderRadius: '50%',
+                                backgroundColor: layer.color,
+                                flexShrink: 0,
+                              }}
+                            />
+                            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                              {cap}
+                            </Typography>
+                          </Box>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                )}
               </Grid>
             </Grid>
           </Box>
         ))}
-      </Container>
+      </PageSection>
 
-      {/* Market Segments */}
-      <Container maxWidth="lg" sx={{ py: 12 }}>
-        <Box sx={{ textAlign: 'center', mb: 8 }}>
-          <Typography variant="h2" sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 700, color: '#000', mb: 2 }}>
-            Market Segments We Serve
-          </Typography>
-          <Typography variant="body1" sx={{ color: '#666', maxWidth: '700px', mx: 'auto', fontSize: '1.08rem' }}>
-            Every sector faces similar data challenges. We customize our support for unique needs.
-          </Typography>
-        </Box>
-
-        <Grid container spacing={3}>
-          {segments.map((segment) => (
+      <PageSection>
+        <SectionHeading
+          title="Market Segments We Serve"
+          description="Every sector faces similar data challenges. We customize our support for unique needs."
+        />
+        <Grid container spacing={{ xs: 2, md: 3 }}>
+          {segments.map((segment, index) => (
             <Grid size={{ xs: 12, md: 6 }} key={segment.name}>
               <StatsCard
                 icon={segment.icon}
                 label={segment.name}
                 description="Common Use Cases"
                 features={segment.use_cases}
-                color={segment.color}
+                color={accentAt(index)}
               />
             </Grid>
           ))}
         </Grid>
-      </Container>
+      </PageSection>
 
-      {/* Our Process */}
-      <Container maxWidth="lg" sx={{ py: 12 }}>
-        <Box sx={{ textAlign: 'center', mb: 8 }}>
-          <Typography variant="h2" sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 700, color: '#000', mb: 2 }}>
-            Our Service Process
-          </Typography>
-          <Typography variant="body1" sx={{ color: '#666', maxWidth: '700px', mx: 'auto', fontSize: '1.08rem' }}>
-            From discovery to partnership
-          </Typography>
-        </Box>
-
+      <PageSection>
+        <SectionHeading
+          title="Our Service Process"
+          description="From discovery to partnership"
+        />
         <Grid container spacing={2}>
           {process.map((item) => (
             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.step}>
-              <Card sx={{ p: 3, textAlign: 'center', height: '100%', borderRadius: '12px' }}>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: '#737373', mb: 2 }}>
+              <Card sx={{ p: { xs: 2.5, md: 3 }, textAlign: 'center', height: '100%', borderRadius: '12px', boxShadow: 'var(--shadow-sm)' }}>
+                <Typography variant="h4" sx={{ fontWeight: 700, color: 'primary.main', mb: 1.5, fontSize: { xs: '1.5rem', md: '2rem' } }}>
                   {item.step}
                 </Typography>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: '#000', mb: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, fontSize: '1.05rem' }}>
                   {item.title}
                 </Typography>
-                <Typography variant="body2" sx={{ color: '#666', lineHeight: 1.6 }}>
+                <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
                   {item.description}
                 </Typography>
               </Card>
             </Grid>
           ))}
         </Grid>
-      </Container>
+      </PageSection>
 
-      <Box sx={{ backgroundColor: '#f9f9f9', py: 8 }}>
-        <Container maxWidth="lg" sx={{ textAlign: 'center' }}>
-          <Typography variant="h3" sx={{ fontWeight: 700, color: '#000', mb: 3 }}>
-            Ready to Transform Your Data?
-          </Typography>
-          <Typography variant="body1" sx={{ color: '#666', mb: 4, fontSize: '1.08rem' }}>
-            Let&apos;s discuss which layers of our data operating system your institution needs.
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <CustomButton href="/consultation" variant="contained">
-              Book a Consultation
-            </CustomButton>
-          </Box>
-        </Container>
-      </Box>
+      <CtaBand
+        title="Ready to Transform Your Data?"
+        description="Let's discuss which layers of our data operating system your institution needs."
+        actions={
+          <CustomButton href="/consultation" variant="contained">
+            Book a Consultation
+          </CustomButton>
+        }
+      />
     </>
   );
 }

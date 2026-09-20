@@ -87,7 +87,7 @@ function SidebarContents({
   const initials = initialsOf(user.fullName, user.email);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: '#0b0b0d', color: '#e5e7eb' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: '#1e2023', color: '#e5e7eb' }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2.5, py: 2, borderBottom: '1px solid #1f1f22' }}>
         <Link href="/admin" onClick={onNavigate} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
           <Box sx={{ position: 'relative', width: 150, height: 32 }}>
@@ -124,7 +124,7 @@ function SidebarContents({
               {user.email}
             </Typography>
           </Box>
-          <Chip label="Admin" size="small" sx={{ bgcolor: '#fbbf24', color: '#111', fontWeight: 800, fontSize: '0.65rem', height: 20 }} />
+          <Chip label="Admin" size="small" sx={{ bgcolor: '#4A90D9', color: '#fff', fontWeight: 800, fontSize: '0.65rem', height: 20 }} />
         </Box>
       </Box>
 
@@ -144,12 +144,14 @@ function SidebarContents({
                 px: 1.5,
                 py: 1,
                 color: isActive ? '#fff' : '#c7c8cc',
-                bgcolor: isActive ? '#1f2024' : 'transparent',
-                '&.Mui-selected': { bgcolor: '#1f2024' },
+                bgcolor: isActive ? 'rgba(74, 144, 217, 0.16)' : 'transparent',
+                borderLeft: isActive ? '3px solid #4A90D9' : '3px solid transparent',
+                minHeight: 44,
+                '&.Mui-selected': { bgcolor: 'rgba(74, 144, 217, 0.16)' },
                 '&:hover': { bgcolor: '#17181b' },
-                '&.Mui-selected:hover': { bgcolor: '#1f2024' },
+                '&.Mui-selected:hover': { bgcolor: 'rgba(74, 144, 217, 0.22)' },
                 '& .MuiListItemIcon-root': {
-                  color: isActive ? '#fff' : '#9ca3af',
+                  color: isActive ? '#7ab0e8' : '#9ca3af',
                   minWidth: 36,
                 },
               }}
@@ -213,7 +215,7 @@ export default function AdminShell({
   const initials = initialsOf(user.fullName, user.email);
 
   return (
-    <Box sx={{ minHeight: '100dvh', display: 'flex', bgcolor: '#f5f6f8' }}>
+    <Box sx={{ minHeight: '100dvh', display: 'flex', bgcolor: 'var(--surface)' }}>
       {/* Permanent sidebar on md+ */}
       <Box
         component="aside"
@@ -237,7 +239,7 @@ export default function AdminShell({
         ModalProps={{ keepMounted: true }}
         slotProps={{
           paper: {
-            sx: { width: SIDEBAR_WIDTH, bgcolor: '#0b0b0d', color: '#e5e7eb', border: 'none' },
+            sx: { width: SIDEBAR_WIDTH, bgcolor: '#1e2023', color: '#e5e7eb', border: 'none' },
           },
         }}
         sx={{ display: { xs: 'block', md: 'none' } }}
@@ -253,12 +255,13 @@ export default function AdminShell({
           elevation={0}
           sx={{
             bgcolor: '#fff',
-            color: '#111',
-            borderBottom: '1px solid #e5e7eb',
+            color: 'text.primary',
+            borderBottom: '1px solid',
+            borderColor: 'divider',
             top: 0,
           }}
         >
-          <Toolbar sx={{ minHeight: { xs: 56, md: 60 }, gap: 1.5, px: { xs: 1.5, md: 3 } }}>
+          <Toolbar sx={{ minHeight: { xs: 56, md: 64 }, gap: 1.5, px: { xs: 1.5, md: 3 } }}>
             <IconButton
               edge="start"
               onClick={() => setMobileOpen(true)}
@@ -269,10 +272,7 @@ export default function AdminShell({
             </IconButton>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0, flex: 1 }}>
-              <Typography variant="overline" sx={{ color: '#9ca3af', letterSpacing: '0.08em', fontWeight: 700 }}>
-                Admin ·
-              </Typography>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#111' }} noWrap>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }} noWrap>
                 {pageTitle}
               </Typography>
             </Box>
@@ -280,7 +280,7 @@ export default function AdminShell({
             <Tooltip title={user.fullName ?? user.email}>
               <Avatar
                 src={user.avatarUrl ?? undefined}
-                sx={{ width: 34, height: 34, bgcolor: '#111', color: '#fff', fontSize: '0.8rem', fontWeight: 700 }}
+                sx={{ width: 34, height: 34, bgcolor: 'primary.main', color: '#fff', fontSize: '0.8rem', fontWeight: 700 }}
               >
                 {initials}
               </Avatar>

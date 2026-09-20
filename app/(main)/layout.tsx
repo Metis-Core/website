@@ -1,6 +1,8 @@
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { getCurrentUserAndProfile } from "@/lib/supabase/queries";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import type { Product } from "@/lib/supabase/types";
 
 export default async function MainLayout({
   children,
@@ -17,10 +19,26 @@ export default async function MainLayout({
       }
     : null;
 
+  const supabase = await createSupabaseServerClient();
+  const { data: productsData } = await supabase
+    .from('products')
+    .select('slug, title, color, link')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true });
+
+  const products = (productsData ?? []) as Array<Pick<Product, 'slug' | 'title' | 'color' | 'link'>>;
+  const productsForNavbar = products.map((p) => ({
+    label: p.title,
+    href: p.link ?? `/products/${p.slug}`,
+    color: p.color,
+  }));
+
   return (
     <>
-      <Navbar user={user} />
-      <main>{children}</main>
+      <Navbar user={user} products={productsForNavbar} />
+      <main className="min-w-0 overflow-x-clip">
+        {children}
+      </main>
       <Footer />
     </>
   );

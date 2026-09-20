@@ -33,7 +33,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
   title,
   subtitle,
   features,
-  color = '#737373',
+  color = '#4A90D9',
 }) => {
   const displayTitle = title ?? label;
   const supportText = subtitle ?? description;
@@ -50,7 +50,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
         borderRadius: '14px',
         border: '1px solid',
         borderColor: `${color}33`,
-        backgroundColor: '#fff',
+        backgroundColor: 'background.paper',
         display: 'flex',
         flexDirection: 'column',
         gap: 1,
@@ -58,7 +58,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
         transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
         '&:hover': {
           transform: 'translateY(-2px)',
-          boxShadow: '0 10px 24px rgba(0,0,0,0.06)',
+          boxShadow: 'var(--shadow-md)',
           borderColor: color,
         },
       }}
@@ -113,7 +113,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
       <Typography
         variant="subtitle2"
         sx={{
-          color: '#000',
+          color: 'text.primary',
           fontWeight: 700,
           fontSize: { xs: '0.9rem', sm: '0.95rem' },
           lineHeight: 1.3,
@@ -130,7 +130,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
         <Typography
           variant="body2"
           sx={{
-            color: '#666',
+            color: 'text.secondary',
             fontSize: { xs: '0.78rem', sm: '0.82rem' },
             lineHeight: 1.45,
             display: '-webkit-box',
@@ -152,7 +152,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
               size="small"
               sx={{
                 bgcolor: `${color}12`,
-                color: '#333',
+                color: 'text.primary',
                 fontWeight: 600,
                 fontSize: '0.7rem',
                 height: 22,
@@ -164,7 +164,7 @@ const StatsCard: React.FC<StatsCardProps> = ({
               label={`+${features.length - 3}`}
               size="small"
               variant="outlined"
-              sx={{ fontSize: '0.7rem', height: 22, borderColor: `${color}55`, color: '#666' }}
+              sx={{ fontSize: '0.7rem', height: 22, borderColor: `${color}55`, color: 'text.secondary' }}
             />
           )}
         </Box>

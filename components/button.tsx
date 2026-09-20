@@ -4,6 +4,7 @@ import { FC, ReactNode } from 'react';
 import NextLink from 'next/link';
 import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { brand } from '@/lib/brand';
 
 interface CustomButtonProps extends Omit<MuiButtonProps, 'href'> {
   children: ReactNode;
@@ -13,23 +14,23 @@ interface CustomButtonProps extends Omit<MuiButtonProps, 'href'> {
 const StyledButton = styled(MuiButton)(({ theme }) => ({
   textTransform: 'none',
   fontWeight: 600,
-  fontSize: '1rem',
-  borderRadius: '8px',
+  fontSize: '0.95rem',
+  borderRadius: 8,
   padding: '10px 24px',
-  transition: 'all 0.3s ease',
+  minHeight: 44,
+  transition: 'background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
   '&.MuiButton-contained': {
     backgroundColor: theme.palette.primary.main,
     '&:hover': {
       backgroundColor: theme.palette.primary.dark,
-      transform: 'translateY(-2px)',
-      boxShadow: `0 8px 16px rgba(25, 118, 210, 0.3)`,
+      boxShadow: `0 8px 16px ${brand.accentBlue}4d`,
     },
   },
   '&.MuiButton-outlined': {
     borderColor: theme.palette.primary.main,
     color: theme.palette.primary.main,
     '&:hover': {
-      backgroundColor: `${theme.palette.primary.main}10`,
+      backgroundColor: `${theme.palette.primary.main}14`,
       borderColor: theme.palette.primary.dark,
     },
   },

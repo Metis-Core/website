@@ -1,27 +1,102 @@
 @import "tailwindcss";
 
+/* Layer 1 — raw values. Brand: graphite-black, graphite-grey, accent-blue. */
 :root {
+  --graphite-black: #1e2023;
+  --graphite-grey: #9e9e9e;
+  --accent-blue: #4a90d9;
+  --accent-blue-dark: #2a5f9e;
+  --accent-blue-light: #7ab0e8;
+
   --background: #ffffff;
-  --foreground: #000000;
+  --surface: #f4f6f8;
+  --foreground: #1e2023;
+  --muted: #5c6068;
+  --border: #e2e5e8;
+  --primary: #4a90d9;
+  --primary-foreground: #ffffff;
+  --danger: #b42318;
+  --success: #1f7a4d;
+  --warning: #b54708;
+  --info: #2a5f9e;
+
+  --shadow-sm: 0 1px 2px rgba(30, 32, 35, 0.06);
+  --shadow-md: 0 1px 2px rgba(30, 32, 35, 0.08), 0 4px 12px rgba(30, 32, 35, 0.06);
+  --shadow-lg: 0 4px 8px rgba(30, 32, 35, 0.08), 0 16px 32px rgba(30, 32, 35, 0.1);
+
+  --nav-offset: 3.5rem;
+  --touch: 44px;
 }
 
-@theme inline {
+.dark {
+  --background: #14161a;
+  --surface: #1e2023;
+  --foreground: #f3f4f6;
+  --muted: #a8adb4;
+  --border: #3a3e44;
+  --primary: #7ab0e8;
+  --primary-foreground: #14161a;
+  --danger: #f97066;
+  --success: #3ccb7f;
+  --warning: #f79009;
+  --info: #7ab0e8;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* Layer 2 — maps raw variables to utilities. Not @theme inline. */
+@theme {
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-graphite-black: var(--graphite-black);
+  --color-graphite-grey: var(--graphite-grey);
+  --color-accent-blue: var(--accent-blue);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-/* keep the background white even in dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #ffffff;
-    --foreground: #000000;
-  }
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes blob-morph {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  25%       { border-radius: 30% 70% 70% 30% / 30% 70% 30% 70%; }
+  50%       { border-radius: 50% 50% 30% 70% / 50% 70% 30% 50%; }
+  75%       { border-radius: 70% 30% 50% 50% / 30% 50% 70% 50%; }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  overflow-x: clip;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --nav-offset: 4rem;
+  }
 }
