@@ -115,15 +115,15 @@ function SidebarContents({
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <Avatar
             src={user.avatarUrl ?? undefined}
-            sx={{ width: 40, height: 40, bgcolor: '#111', color: '#fff', fontSize: '0.9rem', fontWeight: 700 }}
+            sx={{ width: 40, height: 40, bgcolor: 'primary.main', color: '#fff', fontSize: '0.9rem', fontWeight: 700 }}
           >
             {initials}
           </Avatar>
           <Box sx={{ minWidth: 0, flex: 1 }}>
-            <Typography variant="body2" sx={{ fontWeight: 700, color: '#111' }} noWrap>
+            <Typography variant="body2" sx={{ fontWeight: 700 }} noWrap>
               {user.fullName ?? user.email}
             </Typography>
-            <Typography variant="caption" sx={{ color: '#666' }} noWrap component="div">
+            <Typography variant="caption" sx={{ color: 'text.secondary' }} noWrap component="div">
               {user.email}
             </Typography>
           </Box>
@@ -145,13 +145,16 @@ function SidebarContents({
                 mb: 0.5,
                 px: 1.5,
                 py: 1,
-                color: isActive ? '#111' : '#555',
-                bgcolor: isActive ? '#f5f5f5' : 'transparent',
-                '&.Mui-selected': { bgcolor: '#f5f5f5' },
-                '&:hover': { bgcolor: '#f9f9f9' },
-                '&.Mui-selected:hover': { bgcolor: '#efefef' },
+                color: isActive ? 'primary.main' : 'text.secondary',
+                bgcolor: isActive ? 'rgba(74, 144, 217, 0.08)' : 'transparent',
+                borderLeft: isActive ? '3px solid' : '3px solid transparent',
+                borderColor: isActive ? 'primary.main' : 'transparent',
+                minHeight: 44,
+                '&.Mui-selected': { bgcolor: 'rgba(74, 144, 217, 0.08)' },
+                '&:hover': { bgcolor: 'var(--surface)' },
+                '&.Mui-selected:hover': { bgcolor: 'rgba(74, 144, 217, 0.12)' },
                 '& .MuiListItemIcon-root': {
-                  color: isActive ? '#111' : '#888',
+                  color: isActive ? 'primary.main' : 'text.secondary',
                   minWidth: 36,
                 },
               }}
@@ -174,11 +177,12 @@ function SidebarContents({
               borderRadius: '10px',
               px: 1.5,
               py: 1,
-              color: '#111',
-              bgcolor: '#fff7ed',
-              border: '1px solid #fed7aa',
-              '&:hover': { bgcolor: '#ffedd5' },
-              '& .MuiListItemIcon-root': { color: '#c2410c', minWidth: 36 },
+              color: 'text.primary',
+              bgcolor: 'rgba(74, 144, 217, 0.08)',
+              border: '1px solid',
+              borderColor: 'primary.main',
+              '&:hover': { bgcolor: 'rgba(74, 144, 217, 0.14)' },
+              '& .MuiListItemIcon-root': { color: 'primary.main', minWidth: 36 },
             }}
           >
             <ListItemIcon><DashboardOutlined /></ListItemIcon>
@@ -238,7 +242,7 @@ export default function AccountShell({
   const initials = initialsOf(user.fullName, user.email);
 
   return (
-    <Box sx={{ minHeight: '100dvh', display: 'flex', bgcolor: '#fafafa' }}>
+    <Box sx={{ minHeight: '100dvh', display: 'flex', bgcolor: 'var(--surface)' }}>
       {/* Desktop sidebar */}
       <Box
         component="aside"
@@ -276,12 +280,13 @@ export default function AccountShell({
           elevation={0}
           sx={{
             bgcolor: '#fff',
-            color: '#111',
-            borderBottom: '1px solid #eee',
+            color: 'text.primary',
+            borderBottom: '1px solid',
+            borderColor: 'divider',
             top: 0,
           }}
         >
-          <Toolbar sx={{ minHeight: { xs: 56, md: 60 }, gap: 1.5, px: { xs: 1.5, md: 3 } }}>
+          <Toolbar sx={{ minHeight: { xs: 56, md: 64 }, gap: 1.5, px: { xs: 1.5, md: 3 } }}>
             <IconButton
               edge="start"
               onClick={() => setMobileOpen(true)}
@@ -292,10 +297,7 @@ export default function AccountShell({
             </IconButton>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0, flex: 1 }}>
-              <Typography variant="overline" sx={{ color: '#9ca3af', letterSpacing: '0.08em', fontWeight: 700 }}>
-                Account ·
-              </Typography>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#111' }} noWrap>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }} noWrap>
                 {pageTitle}
               </Typography>
             </Box>
@@ -303,7 +305,7 @@ export default function AccountShell({
             <Tooltip title={user.fullName ?? user.email}>
               <Avatar
                 src={user.avatarUrl ?? undefined}
-                sx={{ width: 34, height: 34, bgcolor: '#111', color: '#fff', fontSize: '0.8rem', fontWeight: 700 }}
+                sx={{ width: 34, height: 34, bgcolor: 'primary.main', color: '#fff', fontSize: '0.8rem', fontWeight: 700 }}
               >
                 {initials}
               </Avatar>

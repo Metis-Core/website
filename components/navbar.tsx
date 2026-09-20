@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -24,235 +24,199 @@ import { Menu as MenuIcon, Close as CloseIcon, ExpandMore as ExpandMoreIcon } fr
 import { styled } from '@mui/material/styles';
 import AccountMenu, { type AccountMenuUser } from '@/components/account-menu';
 import CustomButton from '@/components/button';
+import { brand } from '@/lib/brand';
+import { hasOverlayHero } from '@/lib/nav';
 
-const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  background: 'rgba(255, 255, 255, 0.8)',
-  backdropFilter: 'blur(12px)',
-  border: '1px solid rgba(255, 255, 255, 0.4)',
-  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
-  borderRadius: '16px',
-  margin: '16px auto',
-  width: 'calc(100% - 32px)',
-  maxWidth: '1200px',
-  position: 'fixed',
-  top: 0,
-  left: '50%',
-  transform: 'translateX(-50%)',
-  zIndex: 1000,
-}));
-
-const StyledMenu = styled(Menu)(({ theme }) => ({
+const StyledMenu = styled(Menu)({
   '& .MuiPaper-root': {
-    backdropFilter: 'blur(12px)',
-    background: 'rgba(255, 255, 255, 0.95)',
-    border: '1px solid rgba(255, 255, 255, 0.4)',
-    borderRadius: '12px',
-    marginTop: '8px',
-    boxShadow: '0 12px 32px rgba(0, 0, 0, 0.15)',
+    background: 'var(--background)',
+    border: '1px solid var(--border)',
+    borderRadius: 12,
+    marginTop: 8,
+    boxShadow: 'var(--shadow-lg)',
   },
-}));
+});
 
 const navLinks = [
-  { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
   { label: 'Services', href: '/services' },
   { label: 'Consultation', href: '/consultation' },
   { label: 'Careers', href: '/careers' },
 ];
 
-const products = [
-  { label: 'Metis Database', href: '/products/metis-database', color: '#737373' },
-  { label: 'Metis Security', href: '/products/metis-security', color: '#dc004e' },
-  { label: 'Data Sharing', href: '/products/data-sharing', color: '#00897b' },
-  { label: 'Metis Analytics', href: '/products/metis-analytics', color: '#f57c00' },
+const mobileLinks = [
+  { label: 'Home', href: '/' },
+  ...navLinks,
 ];
 
-const Navbar: FC<{ user?: AccountMenuUser | null }> = ({ user = null }) => {
+type NavProduct = { label: string; href: string; color: string };
+
+function navLinkSx(isActive: boolean, overHero: boolean) {
+  const idle = overHero ? 'rgba(255,255,255,0.86)' : 'text.primary';
+  const active = overHero ? '#ffffff' : 'primary.main';
+  return {
+    color: isActive ? active : idle,
+    textDecoration: 'none',
+    fontWeight: 500,
+    fontSize: '0.9rem',
+    position: 'relative' as const,
+    whiteSpace: 'nowrap' as const,
+    py: 1,
+    px: 0.75,
+    borderRadius: 0,
+    bgcolor: 'transparent',
+    boxShadow: 'none',
+    borderBottom: isActive ? `2px solid ${overHero ? '#ffffff' : brand.accentBlue}` : '2px solid transparent',
+    '&:hover': {
+      color: overHero ? '#ffffff' : 'primary.main',
+    },
+  };
+}
+
+const Navbar: FC<{
+  user?: AccountMenuUser | null;
+  products: NavProduct[];
+}> = ({ user = null, products }) => {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
   const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
   const [anchorElProducts, setAnchorElProducts] = useState<null | HTMLElement>(null);
+  const [overHero, setOverHero] = useState(() => hasOverlayHero(pathname));
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+  useEffect(() => {
+    const hero = document.querySelector('[data-nav-hero]');
+    if (!hero) {
+      setOverHero(false);
+      return;
+    }
 
-  const handleProductsClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElProducts(event.currentTarget);
-    setProductsOpen(true);
-  };
+    const update = () => {
+      const bottom = hero.getBoundingClientRect().bottom;
+      setOverHero(bottom > 64);
+    };
 
-  const handleProductsClose = () => {
-    setAnchorElProducts(null);
-    setProductsOpen(false);
-  };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [pathname]);
+
+  const closeDrawer = () => setMobileOpen(false);
+  const isProductActive = pathname.startsWith('/products');
+  const logoSrc = overHero ? '/assets/PNG/LOGO%20WHITE.png' : '/assets/PNG/LOGO%20DARK%20GREY.png';
+
+  const drawerItemSx = (isActive: boolean) => ({
+    color: isActive ? 'primary.main' : 'text.primary',
+    fontSize: '0.95rem',
+    fontWeight: 500,
+    minHeight: 44,
+    bgcolor: isActive ? 'rgba(74, 144, 217, 0.08)' : 'transparent',
+    borderLeft: isActive ? `3px solid ${brand.accentBlue}` : '3px solid transparent',
+    '&:hover': {
+      bgcolor: isActive ? 'rgba(74, 144, 217, 0.08)' : 'var(--surface)',
+      color: 'primary.main',
+    },
+  });
 
   const drawer = (
-    <Box sx={{ p: 2, width: '100%' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, gap: 1 }}>
-        <Link href="/" onClick={handleDrawerToggle} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', flex: 1 }}>
+    <Box sx={{ p: 2, width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 1 }}>
+        <Link href="/" onClick={closeDrawer} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', minWidth: 0 }}>
           <Image
             src="/assets/PNG/LOGO%20DARK%20GREY.png"
             alt="Metis Analytica"
-            width={180}
-            height={52}
-            style={{ height: 48, width: 'auto', objectFit: 'contain' }}
+            width={160}
+            height={44}
+            style={{ height: 40, width: 'auto', maxWidth: '70vw', objectFit: 'contain' }}
             priority
           />
         </Link>
-        <IconButton onClick={handleDrawerToggle}>
+        <IconButton onClick={closeDrawer} aria-label="Close menu">
           <CloseIcon />
         </IconButton>
       </Box>
 
-      <List>
-        {navLinks.map(({ label, href }) => {
+      <List sx={{ flex: 1, overflowY: 'auto' }}>
+        {mobileLinks.map(({ label, href }) => {
           const isActive = pathname === href;
           return (
             <ListItem key={label} disablePadding>
-              <ListItemButton
-                component={Link}
-                href={href}
-                onClick={handleDrawerToggle}
-                sx={{
-                  color: isActive ? '#737373' : '#000',
-                  fontSize: '0.95rem',
-                  fontWeight: 500,
-                  backgroundColor: isActive ? '#73737310' : 'transparent',
-                  borderLeft: isActive ? '4px solid #737373' : 'none',
-                  paddingLeft: isActive ? '12px' : '16px',
-                  '&:hover': {
-                    backgroundColor: isActive ? '#73737310' : '#f0f0f0',
-                    color: '#737373',
-                  },
-                }}
-              >
+              <ListItemButton component={Link} href={href} onClick={closeDrawer} sx={drawerItemSx(isActive)}>
                 {label}
               </ListItemButton>
             </ListItem>
           );
         })}
         <ListItem disablePadding>
-          {(() => {
-            const isProductActive = pathname.startsWith('/products');
-            return (
-              <ListItemButton
-                onClick={() => setMobileProductsOpen(!mobileProductsOpen)}
-                sx={{
-                  color: isProductActive ? '#737373' : '#000',
-                  fontSize: '0.95rem',
-                  fontWeight: 500,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  backgroundColor: isProductActive ? '#73737310' : 'transparent',
-                  borderLeft: isProductActive ? '4px solid #737373' : 'none',
-                  paddingLeft: isProductActive ? '12px' : '16px',
-                  '&:hover': {
-                    backgroundColor: isProductActive ? '#73737310' : '#f0f0f0',
-                    color: '#737373',
-                  },
-                }}
-              >
-                Products
-                <ExpandMoreIcon
-                  sx={{
-                    transform: mobileProductsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.3s ease',
-                    fontSize: '1.2rem',
-                  }}
-                />
-              </ListItemButton>
-            );
-          })()}
+          <ListItemButton
+            onClick={() => setMobileProductsOpen((open) => !open)}
+            sx={drawerItemSx(isProductActive)}
+            aria-expanded={mobileProductsOpen}
+          >
+            Products
+            <ExpandMoreIcon
+              sx={{
+                ml: 'auto',
+                transform: mobileProductsOpen ? 'rotate(180deg)' : 'none',
+                transition: 'transform 0.2s ease',
+              }}
+            />
+          </ListItemButton>
         </ListItem>
         <Collapse in={mobileProductsOpen} timeout="auto">
           <List component="div" disablePadding>
-            {products.map(({ label, href }) => {
-              const isActive = pathname === href;
-              return (
-                <ListItemButton
-                  key={label}
-                  component={Link}
-                  href={href}
-                  onClick={handleDrawerToggle}
-                  sx={{
-                    pl: 4,
-                    color: isActive ? '#737373' : '#666',
-                    fontSize: '0.9rem',
-                    fontWeight: 500,
-                    backgroundColor: isActive ? '#73737310' : 'transparent',
-                    borderLeft: isActive ? '4px solid #737373' : 'none',
-                    '&:hover': {
-                      backgroundColor: isActive ? '#73737310' : '#f0f0f0',
-                      color: '#737373',
-                    },
-                  }}
-                >
-                  {label}
-                </ListItemButton>
-              );
-            })}
+            {products.map(({ label, href }) => (
+              <ListItemButton
+                key={label}
+                component={Link}
+                href={href}
+                onClick={closeDrawer}
+                sx={{ ...drawerItemSx(pathname === href), pl: 4 }}
+              >
+                {label}
+              </ListItemButton>
+            ))}
           </List>
         </Collapse>
         <ListItem disablePadding>
-          {(() => {
-            const isActive = pathname === '/contact';
-            return (
-              <ListItemButton
-                component={Link}
-                href="/contact"
-                onClick={handleDrawerToggle}
-                sx={{
-                  color: isActive ? '#737373' : '#000',
-                  fontSize: '0.95rem',
-                  fontWeight: 500,
-                  backgroundColor: isActive ? '#73737310' : 'transparent',
-                  borderLeft: isActive ? '4px solid #737373' : 'none',
-                  paddingLeft: isActive ? '12px' : '16px',
-                  '&:hover': {
-                    backgroundColor: isActive ? '#73737310' : '#f0f0f0',
-                    color: '#737373',
-                  },
-                }}
-              >
-                Contact
-              </ListItemButton>
-            );
-          })()}
+          <ListItemButton component={Link} href="/contact" onClick={closeDrawer} sx={drawerItemSx(pathname === '/contact')}>
+            Contact
+          </ListItemButton>
         </ListItem>
       </List>
 
       <Divider sx={{ my: 2 }} />
 
       {user ? (
-        <Box sx={{ px: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <Typography variant="caption" sx={{ color: '#666', fontWeight: 700, letterSpacing: '0.08em' }}>
-            SIGNED IN AS
+        <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', gap: 0.5, pb: 2 }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, letterSpacing: '0.08em' }}>
+            Signed in as
           </Typography>
           <Typography variant="body2" sx={{ fontWeight: 700 }} noWrap>
             {user.fullName ?? user.email}
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, mt: 1 }}>
-            <MuiLink component={Link} href="/account" onClick={handleDrawerToggle} sx={{ color: '#000', textDecoration: 'none', py: 0.5 }}>
-              My profile
+          <MuiLink component={Link} href="/account" onClick={closeDrawer} sx={{ color: 'text.primary', textDecoration: 'none', py: 1, minHeight: 44, display: 'flex', alignItems: 'center' }}>
+            My profile
+          </MuiLink>
+          <MuiLink component={Link} href="/account/settings" onClick={closeDrawer} sx={{ color: 'text.primary', textDecoration: 'none', py: 1, minHeight: 44, display: 'flex', alignItems: 'center' }}>
+            Settings
+          </MuiLink>
+          {user.role === 'admin' && (
+            <MuiLink component={Link} href="/admin" onClick={closeDrawer} sx={{ color: 'text.primary', textDecoration: 'none', py: 1, minHeight: 44, display: 'flex', alignItems: 'center', fontWeight: 700 }}>
+              Admin dashboard
             </MuiLink>
-            <MuiLink component={Link} href="/account/settings" onClick={handleDrawerToggle} sx={{ color: '#000', textDecoration: 'none', py: 0.5 }}>
-              Settings
-            </MuiLink>
-            {user.role === 'admin' && (
-              <MuiLink component={Link} href="/admin" onClick={handleDrawerToggle} sx={{ color: '#000', textDecoration: 'none', py: 0.5, fontWeight: 700 }}>
-                Admin dashboard
-              </MuiLink>
-            )}
-          </Box>
+          )}
         </Box>
       ) : (
-        <Box sx={{ px: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <CustomButton href="/login" variant="outlined" onClick={handleDrawerToggle} fullWidth>
+        <Box sx={{ px: 1, display: 'flex', flexDirection: 'column', gap: 1, pb: 2 }}>
+          <CustomButton href="/login" variant="outlined" onClick={closeDrawer} fullWidth>
             Sign in
           </CustomButton>
-          <CustomButton href="/register" variant="contained" onClick={handleDrawerToggle} fullWidth>
+          <CustomButton href="/register" variant="contained" onClick={closeDrawer} fullWidth>
             Create account
           </CustomButton>
         </Box>
@@ -262,254 +226,171 @@ const Navbar: FC<{ user?: AccountMenuUser | null }> = ({ user = null }) => {
 
   return (
     <>
-      <StyledAppBar position="fixed" elevation={0}>
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', px: 2, gap: 3 }}>
-        {/* Logo, Brand & Search */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {/* Logo & Brand — wordmark on every breakpoint */}
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <Box sx={{ position: 'relative', width: { xs: 200, sm: 260 }, height: { xs: 52, sm: 66 } }}>
+      <AppBar
+        position="fixed"
+        elevation={0}
+        color="transparent"
+        sx={{
+          top: 0,
+          left: 0,
+          right: 0,
+          width: '100%',
+          backgroundImage: 'none',
+          bgcolor: overHero ? 'transparent' : 'rgba(255,255,255,0.92)',
+          backdropFilter: overHero ? 'none' : 'blur(16px) saturate(160%)',
+          borderBottom: overHero ? '1px solid transparent' : '1px solid var(--border)',
+          boxShadow: overHero ? 'none' : 'var(--shadow-sm)',
+          transition: 'background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease',
+        }}
+      >
+        <Toolbar
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
+            maxWidth: 1200,
+            mx: 'auto',
+            px: { xs: 2, sm: 3 },
+            minHeight: { xs: 56, sm: 64 },
+            gap: 1,
+          }}
+        >
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', minWidth: 0 }}>
+            <Box sx={{ position: 'relative', width: { xs: 148, sm: 188, md: 220 }, height: { xs: 36, sm: 44, md: 52 }, flexShrink: 0 }}>
               <Image
-                src="/assets/PNG/LOGO%20DARK%20GREY.png"
+                src={logoSrc}
                 alt="Metis Analytica"
                 fill
-                sizes="(max-width: 600px) 200px, 260px"
+                sizes="(max-width: 600px) 148px, (max-width: 900px) 188px, 220px"
                 style={{ objectFit: 'contain', objectPosition: 'left center' }}
                 priority
               />
             </Box>
           </Link>
-        </Box>
 
-        {/* Desktop Navigation - Right Side */}
-        <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3, alignItems: 'center', ml: 'auto' }}>
-          {navLinks.map(({ label, href }) => {
-            const isActive = pathname === href;
-            return (
-              <MuiLink
-                key={label}
-                component={Link}
-                href={href}
-                sx={{
-                  color: isActive ? '#737373' : '#000',
-                  textDecoration: 'none',
-                  fontWeight: 500,
-                  fontSize: '0.95rem',
-                  position: 'relative',
-                  transition: 'all 0.3s ease',
-                  ...(isActive && {
-                    border: '2px solid #737373',
-                    borderRadius: '8px',
-                    px: 1.5,
-                    py: 0.5,
-                  }),
-                  '&:hover': {
-                    color: '#737373',
-                    '&::after': {
-                      width: isActive ? '0%' : '100%',
-                    },
-                  },
-                  '&::after': isActive ? {} : {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: -4,
-                    left: 0,
-                    width: 0,
-                    height: 2,
-                    backgroundColor: '#737373',
-                    transition: 'width 0.3s ease',
-                  },
-                }}
-              >
+          <Box sx={{ display: { xs: 'none', lg: 'flex' }, gap: 1.25, alignItems: 'center', ml: 'auto', minWidth: 0 }}>
+            {navLinks.map(({ label, href }) => (
+              <MuiLink key={label} component={Link} href={href} sx={navLinkSx(pathname === href, overHero)}>
                 {label}
               </MuiLink>
-            );
-          })}
+            ))}
 
-          {/* Products Dropdown */}
-          <Box sx={{ position: 'relative' }}>
-            {(() => {
-              const isProductActive = pathname.startsWith('/products');
-              return (
-                <Box
-                  onClick={handleProductsClick}
-                  sx={{
-                    color: isProductActive ? '#737373' : '#000',
-                    textDecoration: 'none',
-                    fontWeight: 500,
-                    fontSize: '0.95rem',
-                    position: 'relative',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    ...(isProductActive && {
-                      border: '2px solid #737373',
-                      borderRadius: '8px',
-                      px: 1.5,
-                      py: 0.5,
-                    }),
-                    '&:hover': {
-                      color: '#737373',
-                      '&::after': {
-                        width: isProductActive ? '0%' : '100%',
-                      },
-                    },
-                    '&::after': isProductActive ? {} : {
-                      content: '""',
-                      position: 'absolute',
-                      bottom: -4,
-                      left: 0,
-                      width: 0,
-                      height: 2,
-                      backgroundColor: '#737373',
-                      transition: 'width 0.3s ease',
-                    },
-                  }}
-                >
-                  Products
-                  <ExpandMoreIcon
-                    sx={{
-                      fontSize: '1.1rem',
-                      transform: productsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                      transition: 'transform 0.3s ease',
-                    }}
-                  />
-                </Box>
-              );
-            })()}
-            
+            <Box
+              onClick={(event) => {
+                setAnchorElProducts(event.currentTarget);
+                setProductsOpen(true);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  setAnchorElProducts(event.currentTarget);
+                  setProductsOpen(true);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              aria-haspopup="menu"
+              aria-expanded={productsOpen}
+              sx={{ ...navLinkSx(isProductActive, overHero), display: 'flex', alignItems: 'center', gap: 0.25, cursor: 'pointer' }}
+            >
+              Products
+              <ExpandMoreIcon
+                sx={{
+                  fontSize: '1.1rem',
+                  transform: productsOpen ? 'rotate(180deg)' : 'none',
+                  transition: 'transform 0.2s ease',
+                }}
+              />
+            </Box>
+
             <StyledMenu
               anchorEl={anchorElProducts}
               open={productsOpen}
-              onClose={handleProductsClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
+              onClose={() => {
+                setAnchorElProducts(null);
+                setProductsOpen(false);
               }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'left' }}
             >
               {products.map(({ label, href, color }) => (
                 <MenuItem
                   key={label}
                   component={Link}
                   href={href}
-                  onClick={handleProductsClose}
+                  onClick={() => {
+                    setAnchorElProducts(null);
+                    setProductsOpen(false);
+                  }}
                   sx={{
-                    color: '#000',
+                    color: 'text.primary',
                     fontSize: '0.9rem',
-                    fontWeight: 500,
-                    position: 'relative',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      backgroundColor: `${color}10`,
-                      color: color,
-                    },
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
-                      width: '3px',
-                      backgroundColor: color,
-                      transform: 'scaleY(0)',
-                      transformOrigin: 'center',
-                      transition: 'transform 0.3s ease',
-                    },
-                    '&:hover::before': {
-                      transform: 'scaleY(1)',
-                    },
+                    minHeight: 44,
+                    '&:hover': { bgcolor: `${color}14`, color },
                   }}
                 >
                   {label}
                 </MenuItem>
               ))}
             </StyledMenu>
+
+            <MuiLink component={Link} href="/contact" sx={navLinkSx(pathname === '/contact', overHero)}>
+              Contact
+            </MuiLink>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, ml: 0.5 }}>
+              {user ? (
+                <AccountMenu user={user} />
+              ) : (
+                <>
+                  <MuiLink
+                    component={Link}
+                    href="/login"
+                    sx={{
+                      color: overHero ? 'rgba(255,255,255,0.86)' : 'text.primary',
+                      textDecoration: 'none',
+                      fontWeight: 500,
+                      fontSize: '0.9rem',
+                      py: 1,
+                      '&:hover': { color: overHero ? '#fff' : 'primary.main' },
+                    }}
+                  >
+                    Sign in
+                  </MuiLink>
+                  <CustomButton href="/register" variant="contained" sx={{ py: 0.75, px: 2, fontSize: '0.85rem', minHeight: 40 }}>
+                    Get started
+                  </CustomButton>
+                </>
+              )}
+            </Box>
           </Box>
 
-          <MuiLink
-            component={Link}
-            href="/contact"
-            sx={(() => {
-              const isActive = pathname === '/contact';
-              return {
-                color: isActive ? '#737373' : '#000',
-                textDecoration: 'none',
-                fontWeight: 500,
-                fontSize: '0.95rem',
-                position: 'relative',
-                transition: 'all 0.3s ease',
-                ...(isActive && {
-                  border: '2px solid #737373',
-                  borderRadius: '8px',
-                  px: 1.5,
-                  py: 0.5,
-                }),
-                '&:hover': {
-                  color: '#737373',
-                  '&::after': {
-                    width: isActive ? '0%' : '100%',
-                  },
-                },
-                '&::after': isActive ? {} : {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: -4,
-                  left: 0,
-                  width: 0,
-                  height: 2,
-                  backgroundColor: '#737373',
-                  transition: 'width 0.3s ease',
-                },
-              };
-            })()}
+          <IconButton
+            onClick={() => setMobileOpen(true)}
+            sx={{ display: { xs: 'flex', lg: 'none' }, color: overHero ? '#fff' : 'text.primary' }}
+            aria-label="Open menu"
           >
-            Contact
-          </MuiLink>
+            <MenuIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
 
-          {/* Auth CTA / Account menu */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 1 }}>
-            {user ? (
-              <AccountMenu user={user} />
-            ) : (
-              <>
-                <MuiLink
-                  component={Link}
-                  href="/login"
-                  sx={{ color: '#000', textDecoration: 'none', fontWeight: 500, fontSize: '0.95rem' }}
-                >
-                  Sign in
-                </MuiLink>
-                <CustomButton
-                  component={Link}
-                  href="/register"
-                  variant="contained"
-                  sx={{ py: 0.5, px: 2, fontSize: '0.85rem' }}
-                >
-                  Get started
-                </CustomButton>
-              </>
-            )}
-          </Box>
-        </Box>
-
-        {/* Mobile Menu Button */}
-        <IconButton
-          onClick={handleDrawerToggle}
-          sx={{ display: { xs: 'flex', md: 'none' }, color: '#000' }}
-        >
-          <MenuIcon />
-        </IconButton>
-      </Toolbar>
-      </StyledAppBar>
-
-      {/* Mobile Drawer */}
-      <Drawer anchor="top" open={mobileOpen} onClose={handleDrawerToggle}>
+      <Drawer
+        anchor="left"
+        open={mobileOpen}
+        onClose={closeDrawer}
+        ModalProps={{ keepMounted: true }}
+        slotProps={{
+          paper: {
+            sx: {
+              width: 'min(100%, 320px)',
+              bgcolor: 'background.paper',
+              pt: 'env(safe-area-inset-top)',
+            },
+          },
+        }}
+      >
         {drawer}
       </Drawer>
     </>

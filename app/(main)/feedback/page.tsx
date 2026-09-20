@@ -1,5 +1,6 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import Hero from '@/components/hero';
+import PageSection from '@/components/page-section';
 import { getCurrentUserAndProfile } from '@/lib/supabase/queries';
 import FeedbackForm from './_components/feedback-form';
 
@@ -12,20 +13,20 @@ export default async function FeedbackPage() {
     <>
       <Hero
         title="Share Your Feedback"
-        subtitle="We&apos;re listening"
+        subtitle="We're listening"
         description="Every message helps us build better data systems. Tell us what's working, what's not, and what should exist."
       />
 
-      <Container maxWidth="md" sx={{ py: 8 }}>
-        <Box sx={{ p: { xs: 3, md: 4 }, borderRadius: '12px', backgroundColor: '#f9f9f9' }}>
-          <Typography variant="h5" sx={{ fontWeight: 700, color: '#000', mb: 2 }}>
+      <PageSection maxWidth="md">
+        <Box sx={{ p: { xs: 2.5, md: 4 }, borderRadius: '12px', bgcolor: 'var(--surface)' }}>
+          <Typography component="h2" sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '1.2rem', md: '1.4rem' } }}>
             Your feedback
           </Typography>
           <FeedbackForm
             prefill={profile ? { name: profile.full_name ?? '', email: profile.email } : undefined}
           />
         </Box>
-      </Container>
+      </PageSection>
     </>
   );
 }

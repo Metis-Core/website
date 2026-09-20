@@ -58,7 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
           <Typography
             variant="h6"
-            sx={{ fontWeight: 700, color: '#000', mb: 0.5, textAlign: 'center' }}
+            sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5, textAlign: 'center' }}
           >
             {title}
           </Typography>
@@ -70,7 +70,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </Typography>
           <Typography
             variant="body2"
-            sx={{ color: '#666', mb: 3, textAlign: 'center', lineHeight: 1.6, minHeight: '60px' }}
+            sx={{ color: 'text.secondary', mb: 3, textAlign: 'center', lineHeight: 1.6, minHeight: '60px' }}
           >
             {description}
           </Typography>
@@ -100,7 +100,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </Box>
           </div>
           <div className='p-6'>
-            <MorphingDialogTitle className='text-2xl font-bold text-black mb-1'>
+            <MorphingDialogTitle className='text-2xl font-bold text-foreground mb-1'>
               {title}
             </MorphingDialogTitle>
             <MorphingDialogSubtitle className='font-semibold mb-4' style={{ color: color }}>
@@ -116,14 +116,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
             >
               <Typography
                 variant="body2"
-                sx={{ color: '#666', mb: 3, lineHeight: 1.8 }}
+                sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.8 }}
               >
                 {description}
               </Typography>
 
               <Typography
                 variant="subtitle2"
-                sx={{ fontWeight: 600, color: '#000', mb: 2 }}
+                sx={{ fontWeight: 600, color: 'text.primary', mb: 2 }}
               >
                 Key Features:
               </Typography>
@@ -139,7 +139,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                         flexShrink: 0,
                       }}
                     />
-                    <Typography variant="body2" sx={{ color: '#666' }}>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                       {feature}
                     </Typography>
                   </Box>

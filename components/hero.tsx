@@ -3,6 +3,7 @@
 import { FC, ReactNode } from 'react';
 import { Box, Container, Typography } from '@mui/material';
 import Image from 'next/image';
+import { brand } from '@/lib/brand';
 
 interface HeroProps {
   title: string;
@@ -25,62 +26,64 @@ const Hero: FC<HeroProps> = ({
 }) => {
   return (
     <Box
+      data-nav-hero
       sx={{
         position: 'relative',
-        py: { xs: 8, sm: 12, md: 16 },
-        mt: 2,
+        pt: { xs: 'calc(var(--nav-offset) + 2rem)', md: 'calc(var(--nav-offset) + 3.5rem)' },
+        pb: { xs: 5, sm: 8, md: 12 },
         background: backgroundImage
-          ? `linear-gradient(135deg, rgba(25, 118, 210, 0.1) 0%, rgba(220, 0, 78, 0.1) 100%), url(${backgroundImage})`
-          : 'linear-gradient(135deg, rgba(25, 118, 210, 0.05) 0%, rgba(220, 0, 78, 0.05) 100%)',
+          ? `radial-gradient(circle at 15% 15%, rgba(74, 144, 217, 0.35), transparent 45%), radial-gradient(circle at 85% 80%, rgba(42, 95, 158, 0.3), transparent 50%), linear-gradient(135deg, rgba(30, 32, 35, 0.95) 0%, rgba(20, 22, 26, 0.95) 100%), url(${backgroundImage})`
+          : `radial-gradient(circle at 15% 15%, rgba(74, 144, 217, 0.35), transparent 45%), radial-gradient(circle at 85% 80%, rgba(42, 95, 158, 0.3), transparent 50%), linear-gradient(135deg, ${brand.graphiteBlack} 0%, #14161a 100%)`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        borderRadius: '16px',
         overflow: 'hidden',
       }}
     >
-      <Container maxWidth="lg">
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 4, alignItems: 'center' }}>
-          {/* Text Content */}
+      <Container maxWidth="lg" sx={{ px: { xs: 2.5, sm: 3 } }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: imageSrc ? '1fr 1fr' : '1fr' }, gap: 3, alignItems: 'center' }}>
           <Box>
             {subtitle && (
               <Typography
                 variant="overline"
-                sx={{ color: 'primary.main', fontWeight: 700, fontSize: '0.875rem', mb: 1 }}
+                sx={{ color: brand.accentBlueLight, fontWeight: 700, fontSize: { xs: '0.75rem', md: '0.875rem' }, mb: 1, display: 'block' }}
               >
                 {subtitle}
               </Typography>
             )}
             <Typography
-              variant="h2"
+              component="h1"
               sx={{
-                fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
+                fontSize: { xs: '1.75rem', sm: '2.25rem', md: '3.25rem' },
                 fontWeight: 700,
-                mb: 2,
-                lineHeight: 1.2,
-                color: '#000',
+                mb: 1.5,
+                lineHeight: 1.15,
+                color: '#fff',
+                textWrap: 'balance',
               }}
             >
               {title}
             </Typography>
             {description && (
               <Typography
-                variant="body1"
-                sx={{ fontSize: '1.125rem', color: '#666', mb: 4, lineHeight: 1.6 }}
+                sx={{ fontSize: { xs: '0.95rem', md: '1.125rem' }, color: '#D1D5DB', mb: children ? 3 : 0, lineHeight: 1.6 }}
               >
                 {description}
               </Typography>
             )}
-            {children && <Box>{children}</Box>}
+            {children && (
+              <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', '& > *': { width: { xs: '100%', sm: 'auto' } } }}>
+                {children}
+              </Box>
+            )}
           </Box>
 
-          {/* Image */}
           {imageSrc && (
             <Box
               sx={{
                 position: 'relative',
                 display: { xs: 'none', md: 'block' },
                 width: '100%',
-                height: '400px',
+                height: 360,
               }}
             >
               <Image

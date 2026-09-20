@@ -1,26 +1,31 @@
-import Link from 'next/link';
-import { Box, Container, Grid, Typography } from '@mui/material';
-import {
-  PublicOutlined,
-  SignalCellularAltOutlined,
-  TrendingUpOutlined,
-  AccessTimeOutlined,
-} from '@mui/icons-material';
-import Hero from '@/components/hero';
+import HomeHero from '@/app/(main)/_components/home-hero';
+import UsageGap from '@/app/(main)/_components/usage-gap';
+import ExcelTrap from '@/app/(main)/_components/excel-trap';
+import ProblemEvidence from '@/app/(main)/_components/problem-evidence';
 import FeatureCard from '@/components/feature-card';
-import StatsCard from '@/components/stats-card';
 import CustomButton from '@/components/button';
+import PageSection from '@/components/page-section';
+import SectionHeading from '@/components/section-heading';
+import CtaBand from '@/components/cta-band';
 import { DynamicIcon } from '@/components/dynamic-icon';
 import StructuredData from '@/components/structured-data';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { accentAt } from '@/lib/brand';
 import type { Service } from '@/lib/supabase/types';
 
 export const metadata = {
-  title: 'Reliable Data. Smarter Operations.',
+  title: 'Coverage is not a data system',
   description:
-    'Metis Analytica designs, builds, and runs sovereign data infrastructure, custom analytics, and long-term data custodianship for institutions in emerging markets.',
+    'Uganda has 96% 4G coverage and 28% internet use. Metis Analytica dismantles the Excel trap — silos, dark data, and manual inertia — with a data operating system for NGOs, SMEs, corporations, and government.',
   alternates: { canonical: '/' },
 };
+
+const impact = [
+  { value: '20%', label: 'Revenue lift when decisions run on data, not files' },
+  { value: '15%', label: 'Lower operating cost from data-driven operations' },
+  { value: '90%', label: 'Faster finance processing versus manual methods' },
+  { value: '32.71%', label: 'Efficiency gain reported by SMEs that automate' },
+];
 
 export default async function Home() {
   const supabase = await createSupabaseServerClient();
@@ -32,160 +37,115 @@ export default async function Home() {
     .limit(4);
   const services = (data ?? []) as Service[];
 
-  const stats = [
-    { number: '4', label: 'Population Coverage', icon: <PublicOutlined sx={{ fontSize: 24 }} /> },
-    { number: '28', label: 'Internet Penetration %', icon: <SignalCellularAltOutlined sx={{ fontSize: 24 }} /> },
-    { number: '96', label: 'Potential Reach %', icon: <TrendingUpOutlined sx={{ fontSize: 24 }} /> },
-    { number: '12', label: 'Weekly Data Searching (hrs)', icon: <AccessTimeOutlined sx={{ fontSize: 24 }} /> },
-  ];
-
   return (
     <>
       <StructuredData />
-      <Hero
-        title="We Build the Data Foundations Behind Great Products and Decisions"
-        subtitle="Data Infrastructure • Data Solutions • Analytics"
-        description="Metis is a data-focused company that helps teams design, build, and run reliable data systems. We work where data, software, and decision-making meet."
-        imageSrc="/assets/PNG/LOGO%20DARK%20GREY.png"
-        imageAlt="Metis Analytica"
-      >
-        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-          <CustomButton href="/consultation" variant="contained" size="large">
-            Book a Consultation
-          </CustomButton>
-          <CustomButton href="/consultation?type=demo" variant="outlined" size="large">
-            Request a Demo
-          </CustomButton>
-        </Box>
-      </Hero>
+      <HomeHero />
 
-      {/* Problem Statement */}
-      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 12 } }}>
-        <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 8 } }}>
-          <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 700, fontSize: '0.875rem', mb: 1 }}>
-            The Reality in Uganda & Emerging Markets
-          </Typography>
-          <Typography
-            variant="h3"
-            sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' }, fontWeight: 700, color: '#000', mb: 4 }}
-          >
-            Most Organizations Are Still Trapped in the Excel Era
-          </Typography>
-          <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }} sx={{ maxWidth: '900px', mx: 'auto' }}>
-            {stats.map((stat, index) => (
-              <Grid size={{ xs: 6, md: 3 }} key={index}>
-                <StatsCard
-                  number={stat.number}
-                  label={stat.label}
-                  icon={stat.icon}
-                  color={['#737373', '#dc004e', '#00897b', '#f57c00'][index]}
-                />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
-      </Container>
+      <PageSection>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div>
+            <SectionHeading
+              align="left"
+              eyebrow="The usage gap"
+              title="4G covers the country. Work still happens in analog."
+              description="Of 100 people, 96 live under 4G. Only 28 actually use the internet. The remaining 68 are covered and unused — and that is where institutional intelligence goes dark. Generic websites sit on top of that mess. Metis starts underneath: one source of truth, then intelligence, then action."
+            />
+          </div>
+          <UsageGap />
+        </div>
+      </PageSection>
 
-      {/* Core Services (DB-backed) */}
-      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 12 } }}>
-        <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 8 } }}>
-          <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 700, fontSize: '0.875rem' }}>
-            What We Do
-          </Typography>
-          <Typography
-            variant="h2"
-            sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 700, color: '#000', mb: 2 }}
-          >
-            The Data Operating System
-          </Typography>
-          <Typography variant="body1" sx={{ color: '#666', maxWidth: '600px', mx: 'auto', fontSize: '1.125rem' }}>
-            Four integrated layers that transform how your organization uses data
-          </Typography>
-        </Box>
+      <PageSection muted>
+        <SectionHeading
+          eyebrow="The Excel trap"
+          title="Institutional intelligence is trapped in files nobody else can use."
+          description="Dark data in isolated spreadsheets, paper, and ministry walls burns time, money, and service delivery. This is not a software shortage. It is fragmentation."
+        />
+        <div className="rounded-2xl bg-[var(--graphite-black)] px-4 py-8 sm:px-8 sm:py-10 mb-10">
+          <ExcelTrap />
+        </div>
+        <ProblemEvidence />
+      </PageSection>
 
-        <Grid container spacing={3}>
+      <PageSection>
+        <SectionHeading
+          eyebrow="The operating system"
+          title="From viewing data to acting on it"
+          description="Metis designs, builds, and runs the layers that turn static reporting into automated work — without asking every officer to become an analyst."
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {services.map((service) => (
-            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={service.id}>
-              <FeatureCard
-                icon={<DynamicIcon name={service.icon} sx={{ fontSize: 40 }} />}
-                title={service.title}
-                description={service.description}
-                color={service.color}
-                href="/services"
-              />
-            </Grid>
+            <FeatureCard
+              key={service.id}
+              icon={<DynamicIcon name={service.icon} sx={{ fontSize: 40 }} />}
+              title={service.title}
+              description={service.description}
+              color={service.color}
+              href="/services"
+            />
           ))}
-        </Grid>
-      </Container>
+        </div>
+      </PageSection>
 
-      {/* Impact Stats */}
-      <Box
-        sx={{
-          background: 'linear-gradient(135deg, rgba(25, 118, 210, 0.1) 0%, rgba(220, 0, 78, 0.1) 100%)',
-          py: 8,
-          borderRadius: '16px',
-          mx: 2,
-          mb: 8,
-        }}
-      >
-        <Container maxWidth="lg">
-          <Grid container spacing={4}>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography sx={{ fontSize: '2.5rem', fontWeight: 700, color: '#737373', mb: 1 }}>20%</Typography>
-                <Typography variant="body2" sx={{ color: '#666' }}>
-                  Revenue increase through data-driven decisions
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography sx={{ fontSize: '2.5rem', fontWeight: 700, color: '#dc004e', mb: 1 }}>25-50%</Typography>
-                <Typography variant="body2" sx={{ color: '#666' }}>
-                  Cost reduction through automation
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography sx={{ fontSize: '2.5rem', fontWeight: 700, color: '#00897b', mb: 1 }}>90%</Typography>
-                <Typography variant="body2" sx={{ color: '#666' }}>
-                  Faster transaction processing
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography sx={{ fontSize: '2.5rem', fontWeight: 700, color: '#f57c00', mb: 1 }}>32.71%</Typography>
-                <Typography variant="body2" sx={{ color: '#666' }}>
-                  Efficiency gains for SMEs
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
+      <section className="bg-[color-mix(in_srgb,var(--accent-blue)_10%,transparent)] py-12 sm:py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-2 lg:grid-cols-4 gap-8">
+          {impact.map((item, index) => (
+            <div key={item.label} className="min-w-0 text-center sm:text-left">
+              <p
+                className="text-2xl sm:text-4xl font-bold tabular-nums leading-none"
+                style={{ color: accentAt(index) }}
+              >
+                {item.value}
+              </p>
+              <p className="mt-2 text-xs sm:text-sm text-[var(--muted)] leading-relaxed">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* CTA */}
-      <Container maxWidth="lg" sx={{ py: 8, textAlign: 'center' }}>
-        <Typography
-          variant="h2"
-          sx={{ fontSize: { xs: '1.75rem', md: '2.5rem' }, fontWeight: 700, color: '#000', mb: 2 }}
-        >
-          Ready to Build Your Data Foundation?
-        </Typography>
-        <Typography variant="body1" sx={{ color: '#666', mb: 4, fontSize: '1.125rem' }}>
-          Let&apos;s talk about your data challenges and how Metis can transform your operations
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <CustomButton href="/consultation" variant="contained" size="large">
-            Book a Consultation
-          </CustomButton>
-          <CustomButton href="/contact" variant="outlined" size="large">
-            Start a Conversation
-          </CustomButton>
-        </Box>
-      </Container>
+      <PageSection>
+        <SectionHeading
+          eyebrow="Why Metis"
+          title="Not another website shop. A data custodian."
+          description="Uganda's ICT market is full of generic IT support. Almost none of it specializes in sovereign data architecture or automation engineering."
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-4xl mx-auto">
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-5 sm:p-6">
+            <p className="text-3xl sm:text-4xl font-bold text-[var(--foreground)] tabular-nums">59%</p>
+            <p className="mt-2 text-sm font-semibold text-[var(--foreground)]">
+              of government agencies reported a cybersecurity incident last year
+            </p>
+            <p className="mt-2 text-sm text-[var(--muted)] leading-relaxed">
+              Metis embeds governance and security in the architecture, not as a slide at the end of a project.
+            </p>
+          </div>
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-5 sm:p-6">
+            <p className="text-3xl sm:text-4xl font-bold text-[var(--foreground)] tabular-nums">5.6%</p>
+            <p className="mt-2 text-sm font-semibold text-[var(--foreground)]">
+              of local-government staff routinely use a computer
+            </p>
+            <p className="mt-2 text-sm text-[var(--muted)] leading-relaxed">
+              Systems should execute routine work. Leadership gets performance intelligence; staff are not asked to become data clerks.
+            </p>
+          </div>
+        </div>
+      </PageSection>
+
+      <CtaBand
+        title="Ready to leave the analog default?"
+        description="Tell us where the files live. We will show you what a single source of truth would change."
+        actions={
+          <>
+            <CustomButton href="/consultation" variant="contained" size="large">
+              Book a Consultation
+            </CustomButton>
+            <CustomButton href="/contact" variant="outlined" size="large">
+              Start a Conversation
+            </CustomButton>
+          </>
+        }
+      />
     </>
   );
 }

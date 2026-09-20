@@ -2,6 +2,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireAdmin } from '@/lib/supabase/queries';
 import { LinkPaper } from '@/components/link-wrappers';
+import { accentAt, brand } from '@/lib/brand';
 
 export const metadata = { title: 'Admin overview · Metis Analytica' };
 
@@ -39,32 +40,29 @@ export default async function AdminOverviewPage() {
   ]);
 
   const inbox: StatItem[] = [
-    { label: 'New consultations', value: newConsultations, href: '/admin/consultations', color: '#1976d2' },
-    { label: 'New feedback', value: newFeedback, href: '/admin/feedback', color: '#dc004e' },
-    { label: 'New applications', value: newApplications, href: '/admin/applications', color: '#00897b' },
-    { label: 'New messages', value: newMessages, href: '/admin/messages', color: '#f57c00' },
+    { label: 'New consultations', value: newConsultations, href: '/admin/consultations', color: accentAt(0) },
+    { label: 'New feedback', value: newFeedback, href: '/admin/feedback', color: accentAt(1) },
+    { label: 'New applications', value: newApplications, href: '/admin/applications', color: accentAt(2) },
+    { label: 'New messages', value: newMessages, href: '/admin/messages', color: accentAt(3) },
   ];
 
   const catalog: StatItem[] = [
-    { label: 'Total users', value: totalUsers, href: '/admin/users', color: '#000' },
-    { label: 'Services', value: totalServices, href: '/admin/services', color: '#737373' },
-    { label: 'Products', value: totalProducts, href: '/admin/products', color: '#dc004e' },
-    { label: 'Open roles', value: activeCareers, href: '/admin/careers', color: '#00897b' },
+    { label: 'Total users', value: totalUsers, href: '/admin/users', color: brand.graphiteBlack },
+    { label: 'Services', value: totalServices, href: '/admin/services', color: brand.accentBlueDark },
+    { label: 'Products', value: totalProducts, href: '/admin/products', color: accentAt(0) },
+    { label: 'Open roles', value: activeCareers, href: '/admin/careers', color: accentAt(2) },
   ];
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       <Box>
-        <Typography variant="h4" sx={{ fontWeight: 700, color: '#000' }}>
-          Overview
-        </Typography>
-        <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           What&apos;s new since your last visit and the state of the catalog.
         </Typography>
       </Box>
 
       <Box>
-        <Typography variant="overline" sx={{ color: '#999', fontWeight: 700, letterSpacing: '0.08em' }}>
+        <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 700, letterSpacing: '0.08em' }}>
           Inbox
         </Typography>
         <Grid container spacing={2} sx={{ mt: 0.5 }}>
@@ -77,7 +75,7 @@ export default async function AdminOverviewPage() {
       </Box>
 
       <Box>
-        <Typography variant="overline" sx={{ color: '#999', fontWeight: 700, letterSpacing: '0.08em' }}>
+        <Typography variant="overline" sx={{ color: 'text.secondary', fontWeight: 700, letterSpacing: '0.08em' }}>
           Catalog
         </Typography>
         <Grid container spacing={2} sx={{ mt: 0.5 }}>
@@ -102,16 +100,17 @@ function StatCard({ label, value, href, color }: StatItem) {
         textDecoration: 'none',
         p: 3,
         borderRadius: '12px',
-        border: '1px solid #eee',
+        border: '1px solid',
+        borderColor: 'divider',
         borderLeft: `4px solid ${color}`,
-        transition: 'all 0.2s ease',
-        '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 8px 24px rgba(0,0,0,0.06)' },
+        transition: 'box-shadow 0.2s ease',
+        '&:hover': { boxShadow: 'var(--shadow-md)' },
       }}
     >
-      <Typography variant="caption" sx={{ color: '#666', fontWeight: 600, letterSpacing: '0.04em' }}>
+      <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: '0.04em' }}>
         {label.toUpperCase()}
       </Typography>
-      <Typography sx={{ fontSize: '2rem', fontWeight: 700, color: '#000', mt: 0.5 }}>{value}</Typography>
+      <Typography sx={{ fontSize: { xs: '1.5rem', md: '2rem' }, fontWeight: 700, mt: 0.5 }}>{value}</Typography>
     </LinkPaper>
   );
 }

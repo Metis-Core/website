@@ -62,7 +62,7 @@ export default function ConsultationForm({
           fullWidth
           placeholder="Tell us about your current data setup and where you want to be in 6–12 months."
         />
-        <CustomButton type="submit" variant="contained" disabled={pending}>
+        <CustomButton type="submit" variant="contained" disabled={pending} fullWidth>
           {pending ? 'Sending…' : 'Book consultation'}
         </CustomButton>
       </Stack>

@@ -7,16 +7,13 @@ export default function AccountSettingsPage() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       <Box>
-        <Typography variant="h4" sx={{ fontWeight: 700, color: '#000' }}>
-          Settings
-        </Typography>
-        <Typography variant="body2" sx={{ color: '#666', mt: 0.5 }}>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           Security and account preferences.
         </Typography>
       </Box>
 
-      <Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, borderRadius: '16px', border: '1px solid #eee' }}>
-        <Typography variant="h6" sx={{ fontWeight: 700, color: '#000', mb: 2 }}>
+      <Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, borderRadius: '16px', border: '1px solid', borderColor: 'divider' }}>
+        <Typography variant="h6" sx={{ fontWeight: 700, mb: 2 }}>
           Change password
         </Typography>
         <PasswordForm />

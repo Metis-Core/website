@@ -1,11 +1,12 @@
+import { Box, Chip, Divider, Grid, Typography } from '@mui/material';
+import { LocationOn, WorkOutline, ArrowBack, CheckCircleOutline } from '@mui/icons-material';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Box, Chip, Container, Divider, Grid, Typography } from '@mui/material';
-import { LocationOn, WorkOutline, ArrowBack, CheckCircleOutline } from '@mui/icons-material';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getCurrentUserAndProfile } from '@/lib/supabase/queries';
 import type { CareerPosition } from '@/lib/supabase/types';
 import ApplyForm from './_components/apply-form';
+import PageSection from '@/components/page-section';
 
 const TYPE_LABEL: Record<CareerPosition['type'], string> = {
   full_time: 'Full-time',
@@ -36,40 +37,43 @@ export default async function CareerDetailPage({ params }: { params: Promise<{ s
   if (!position) notFound();
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
-      <Box sx={{ mb: 3, mt: { xs: 6, md: 8 } }}>
-        <Link href="/careers" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#666', textDecoration: 'none' }}>
+    <PageSection offsetNav>
+      <Box sx={{ mb: 3 }}>
+        <Link
+          href="/careers"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, textDecoration: 'none', minHeight: 44 }}
+        >
           <ArrowBack sx={{ fontSize: 18 }} /> All roles
         </Link>
       </Box>
 
-      <Grid container spacing={5}>
+      <Grid container spacing={{ xs: 4, md: 5 }}>
         <Grid size={{ xs: 12, md: 7 }}>
           <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
             {position.department && (
-              <Chip label={position.department} size="small" sx={{ bgcolor: '#000', color: '#fff', fontWeight: 700 }} />
+              <Chip label={position.department} size="small" sx={{ bgcolor: 'secondary.main', color: '#fff', fontWeight: 700 }} />
             )}
             <Chip label={TYPE_LABEL[position.type]} size="small" variant="outlined" />
             <Chip icon={<LocationOn sx={{ fontSize: 14 }} />} label={position.location} size="small" variant="outlined" />
           </Box>
 
-          <Typography variant="h3" sx={{ fontWeight: 700, color: '#000', mb: 2, fontSize: { xs: '2rem', md: '2.5rem' } }}>
+          <Typography component="h1" sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '1.75rem', md: '2.5rem' } }}>
             {position.title}
           </Typography>
-          <Typography variant="body1" sx={{ color: '#666', lineHeight: 1.7, mb: 4, fontSize: '1.08rem' }}>
+          <Typography sx={{ color: 'text.secondary', lineHeight: 1.7, mb: 4, fontSize: { xs: '0.95rem', md: '1.05rem' } }}>
             {position.description}
           </Typography>
 
           {position.responsibilities.length > 0 && (
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: '#000', mb: 2 }}>
+              <Typography component="h2" sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '1.15rem', md: '1.35rem' } }}>
                 What you&apos;ll do
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                 {position.responsibilities.map((r) => (
                   <Box key={r} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
-                    <CheckCircleOutline sx={{ color: '#00897b', fontSize: 22, mt: 0.25, flexShrink: 0 }} />
-                    <Typography variant="body1" sx={{ color: '#333' }}>{r}</Typography>
+                    <CheckCircleOutline sx={{ color: 'success.main', fontSize: 22, mt: 0.25, flexShrink: 0 }} />
+                    <Typography>{r}</Typography>
                   </Box>
                 ))}
               </Box>
@@ -78,14 +82,14 @@ export default async function CareerDetailPage({ params }: { params: Promise<{ s
 
           {position.requirements.length > 0 && (
             <Box>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: '#000', mb: 2 }}>
+              <Typography component="h2" sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '1.15rem', md: '1.35rem' } }}>
                 What we&apos;re looking for
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                 {position.requirements.map((r) => (
                   <Box key={r} sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
-                    <CheckCircleOutline sx={{ color: '#dc004e', fontSize: 22, mt: 0.25, flexShrink: 0 }} />
-                    <Typography variant="body1" sx={{ color: '#333' }}>{r}</Typography>
+                    <CheckCircleOutline sx={{ color: 'primary.main', fontSize: 22, mt: 0.25, flexShrink: 0 }} />
+                    <Typography>{r}</Typography>
                   </Box>
                 ))}
               </Box>
@@ -98,15 +102,16 @@ export default async function CareerDetailPage({ params }: { params: Promise<{ s
             sx={{
               position: { md: 'sticky' },
               top: { md: 100 },
-              p: { xs: 3, md: 4 },
+              p: { xs: 2.5, md: 4 },
               borderRadius: '16px',
-              backgroundColor: '#f9f9f9',
-              border: '1px solid #e0e0e0',
+              bgcolor: 'var(--surface)',
+              border: '1px solid',
+              borderColor: 'divider',
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-              <WorkOutline sx={{ color: '#000' }} />
-              <Typography variant="h6" sx={{ fontWeight: 700, color: '#000' }}>
+              <WorkOutline />
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
                 Apply for this role
               </Typography>
             </Box>
@@ -118,6 +123,6 @@ export default async function CareerDetailPage({ params }: { params: Promise<{ s
           </Box>
         </Grid>
       </Grid>
-    </Container>
+    </PageSection>
   );
 }

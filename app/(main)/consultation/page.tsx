@@ -1,7 +1,8 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getCurrentUserAndProfile } from '@/lib/supabase/queries';
 import Hero from '@/components/hero';
+import PageSection from '@/components/page-section';
 import ConsultationForm from './_components/consultation-form';
 
 export const metadata = { title: 'Book a consultation · Metis Analytica' };
@@ -23,9 +24,9 @@ export default async function ConsultationPage() {
         description="Tell us where you are and where you want to be with your data. We'll come back within 24 hours to schedule the call."
       />
 
-      <Container maxWidth="md" sx={{ py: { xs: 4, md: 8 } }}>
-        <Box sx={{ p: { xs: 3, md: 4 }, borderRadius: '14px', backgroundColor: '#f9f9f9' }}>
-          <Typography variant="h5" sx={{ fontWeight: 700, color: '#000', mb: 2 }}>
+      <PageSection maxWidth="md">
+        <Box sx={{ p: { xs: 2.5, md: 4 }, borderRadius: '14px', bgcolor: 'var(--surface)' }}>
+          <Typography component="h2" sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '1.2rem', md: '1.4rem' } }}>
             Request your session
           </Typography>
           <ConsultationForm
@@ -37,7 +38,7 @@ export default async function ConsultationPage() {
             }
           />
         </Box>
-      </Container>
+      </PageSection>
     </>
   );
 }
