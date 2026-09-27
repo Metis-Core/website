@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
+import { FC, useState, useSyncExternalStore } from 'react';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -51,6 +51,17 @@ const mobileLinks = [
 
 type NavProduct = { label: string; href: string; color: string };
 
+const LOGO_WHITE = '/assets/PNG/LOGO%20WHITE.png';
+const LOGO_DARK = '/assets/PNG/LOGO%20DARK%20GREY.png';
+const STATE_TRANSITION = '0.3s ease';
+
+function subscribeToScroll(onChange: () => void) {
+  window.addEventListener('scroll', onChange, { passive: true });
+  return () => window.removeEventListener('scroll', onChange);
+}
+const getIsScrolled = () => window.scrollY > 0;
+const getServerIsScrolled = () => false;
+
 function navLinkSx(isActive: boolean, overHero: boolean) {
   const idle = overHero ? 'rgba(255,255,255,0.86)' : 'text.primary';
   const active = overHero ? '#ffffff' : 'primary.main';
@@ -67,6 +78,7 @@ function navLinkSx(isActive: boolean, overHero: boolean) {
     bgcolor: 'transparent',
     boxShadow: 'none',
     borderBottom: isActive ? `2px solid ${overHero ? '#ffffff' : brand.accentBlue}` : '2px solid transparent',
+    transition: `color ${STATE_TRANSITION}, border-color ${STATE_TRANSITION}`,
     '&:hover': {
       color: overHero ? '#ffffff' : 'primary.main',
     },
@@ -82,32 +94,11 @@ const Navbar: FC<{
   const [productsOpen, setProductsOpen] = useState(false);
   const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
   const [anchorElProducts, setAnchorElProducts] = useState<null | HTMLElement>(null);
-  const [overHero, setOverHero] = useState(() => hasOverlayHero(pathname));
-
-  useEffect(() => {
-    const hero = document.querySelector('[data-nav-hero]');
-    if (!hero) {
-      setOverHero(false);
-      return;
-    }
-
-    const update = () => {
-      const bottom = hero.getBoundingClientRect().bottom;
-      setOverHero(bottom > 64);
-    };
-
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    return () => {
-      window.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
-  }, [pathname]);
+  const isScrolled = useSyncExternalStore(subscribeToScroll, getIsScrolled, getServerIsScrolled);
+  const overHero = hasOverlayHero(pathname) && !isScrolled;
 
   const closeDrawer = () => setMobileOpen(false);
   const isProductActive = pathname.startsWith('/products');
-  const logoSrc = overHero ? '/assets/PNG/LOGO%20WHITE.png' : '/assets/PNG/LOGO%20DARK%20GREY.png';
 
   const drawerItemSx = (isActive: boolean) => ({
     color: isActive ? 'primary.main' : 'text.primary',
@@ -127,7 +118,7 @@ const Navbar: FC<{
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 1 }}>
         <Link href="/" onClick={closeDrawer} style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', minWidth: 0 }}>
           <Image
-            src="/assets/PNG/LOGO%20DARK%20GREY.png"
+            src={LOGO_DARK}
             alt="Metis Analytica"
             width={160}
             height={44}
@@ -236,11 +227,10 @@ const Navbar: FC<{
           right: 0,
           width: '100%',
           backgroundImage: 'none',
-          bgcolor: overHero ? 'transparent' : 'rgba(255,255,255,0.92)',
-          backdropFilter: overHero ? 'none' : 'blur(16px) saturate(160%)',
+          bgcolor: overHero ? 'transparent' : '#ffffff',
           borderBottom: overHero ? '1px solid transparent' : '1px solid var(--border)',
           boxShadow: overHero ? 'none' : 'var(--shadow-sm)',
-          transition: 'background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease',
+          transition: `background-color ${STATE_TRANSITION}, border-color ${STATE_TRANSITION}, box-shadow ${STATE_TRANSITION}`,
         }}
       >
         <Toolbar
@@ -252,20 +242,32 @@ const Navbar: FC<{
             maxWidth: 1200,
             mx: 'auto',
             px: { xs: 2, sm: 3 },
-            minHeight: { xs: 56, sm: 64 },
+            minHeight: { xs: 'var(--nav-offset)', sm: 'var(--nav-offset)' },
             gap: 1,
           }}
         >
           <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', minWidth: 0 }}>
             <Box sx={{ position: 'relative', width: { xs: 148, sm: 188, md: 220 }, height: { xs: 36, sm: 44, md: 52 }, flexShrink: 0 }}>
-              <Image
-                src={logoSrc}
-                alt="Metis Analytica"
-                fill
-                sizes="(max-width: 600px) 148px, (max-width: 900px) 188px, 220px"
-                style={{ objectFit: 'contain', objectPosition: 'left center' }}
-                priority
-              />
+              {[
+                { src: LOGO_WHITE, visible: overHero },
+                { src: LOGO_DARK, visible: !overHero },
+              ].map(({ src, visible }) => (
+                <Image
+                  key={src}
+                  src={src}
+                  alt={visible ? 'Metis Analytica' : ''}
+                  aria-hidden={!visible}
+                  fill
+                  sizes="(max-width: 600px) 148px, (max-width: 900px) 188px, 220px"
+                  style={{
+                    objectFit: 'contain',
+                    objectPosition: 'left center',
+                    opacity: visible ? 1 : 0,
+                    transition: `opacity ${STATE_TRANSITION}`,
+                  }}
+                  priority
+                />
+              ))}
             </Box>
           </Link>
 
@@ -353,6 +355,7 @@ const Navbar: FC<{
                       fontWeight: 500,
                       fontSize: '0.9rem',
                       py: 1,
+                      transition: `color ${STATE_TRANSITION}`,
                       '&:hover': { color: overHero ? '#fff' : 'primary.main' },
                     }}
                   >
@@ -368,7 +371,11 @@ const Navbar: FC<{
 
           <IconButton
             onClick={() => setMobileOpen(true)}
-            sx={{ display: { xs: 'flex', lg: 'none' }, color: overHero ? '#fff' : 'text.primary' }}
+            sx={{
+              display: { xs: 'flex', lg: 'none' },
+              color: overHero ? '#fff' : 'text.primary',
+              transition: `color ${STATE_TRANSITION}, background-color 150ms`,
+            }}
             aria-label="Open menu"
           >
             <MenuIcon />
